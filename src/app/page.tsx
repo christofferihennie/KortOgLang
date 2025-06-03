@@ -1,7 +1,28 @@
+"use client";
+
+import { useStoreUserEffect } from "@/components/effects/useStoreUserEffect";
+import { SignInButton, UserButton } from "@clerk/nextjs";
+import { Authenticated, Unauthenticated } from "convex/react";
+import GameList from "./game-list";
+
 export default function Home() {
+  const { isLoading } = useStoreUserEffect();
+
   return (
     <main>
-      <div>Hello world!</div>
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        <>
+          <Authenticated>
+            <GameList />
+            <UserButton />
+          </Authenticated>
+          <Unauthenticated>
+            <SignInButton />
+          </Unauthenticated>
+        </>
+      )}
     </main>
   );
 }
