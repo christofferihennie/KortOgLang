@@ -1,8 +1,8 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
 
 export function MobileNav({
   children,
@@ -10,7 +10,7 @@ export function MobileNav({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="w-full flex justify-evenly py-6 border-t border-e border-t-border rounded-t-lg shadow-sm bg-gradient-to-t from-primary/10 to-card">
+    <div className="w-full flex justify-evenly py-6 pb-10 border-t border-e border-t-border rounded-t-lg shadow-sm bg-gradient-to-t from-primary/10 to-card">
       {children}
     </div>
   );
