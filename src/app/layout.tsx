@@ -11,20 +11,6 @@ export const metadata: Metadata = {
   description: 'Hold oversikt, se statistikk, og kjemp om å være den med de beste kortene!',
   applicationName: "Kort og Lang",
   creator: "Christoffer Hennie",
-  icons: {
-    icon: [
-        {
-          url: "/web-app-manifest-192x192.png",
-          sizes: "192x192",
-          type: "image/png",
-        },
-        {
-          url: "/web-app-manifest-512x512.png",
-          sizes: "512x512",
-          type: "image/png",
-        }
-    ]
-  },
   robots: {
       index: false,
       follow: false,
@@ -32,7 +18,7 @@ export const metadata: Metadata = {
   },
   appleWebApp: {
       title: 'Kort og Lang',
-      statusBarStyle: 'default',
+      statusBarStyle: 'black-translucent',
   },
 }
 
