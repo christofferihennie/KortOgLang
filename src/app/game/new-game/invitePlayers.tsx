@@ -1,25 +1,11 @@
 "use client";
 
 import { api } from "#/_generated/api";
-import { useQuery } from "convex/react";
-import * as React from "react";
-import { CheckIcon, ChevronsUpDownIcon, XIcon } from "lucide-react";
-
-import { cn } from "@/lib/utils";
+import { Combobox, ComboboxOption } from "@/components/form";
 import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { useQuery } from "convex/react";
+import { XIcon } from "lucide-react";
+import * as React from "react";
 
 interface InvitePlayersProps {
   value: string[];
@@ -31,13 +17,18 @@ export default function InvitePlayers({
   onChange,
 }: InvitePlayersProps) {
   const otherUsers = useQuery(api.users.getUsers);
-  const [open, setOpen] = React.useState(false);
 
   const selectedUsers = React.useMemo(() => {
     return otherUsers?.filter((user) => value.includes(user._id)) || [];
   }, [otherUsers, value]);
 
-  const handleSelect = (userId: string) => {
+  const options: ComboboxOption[] = otherUsers?.map((user) => ({
+    value: user._id,
+    label: user.name,
+  })) || [];
+
+  const handleComboboxSelect = (selectedValue: string | string[]) => {
+    const userId = selectedValue as string;
     if (value.includes(userId)) {
       onChange(value.filter((id) => id !== userId));
     } else {
@@ -49,8 +40,13 @@ export default function InvitePlayers({
     onChange(value.filter((id) => id !== userId));
   };
 
+  const displayText = selectedUsers.length > 0
+    ? `${selectedUsers.length} spiller${selectedUsers.length !== 1 ? "e" : ""} valgt`
+    : undefined;
+
   return (
-    <div className="space-y-2">
+    <>
+      <div className="space-y-2">
       {/* Selected players */}
       {selectedUsers.length > 0 && (
         <div className="flex flex-wrap gap-2">
@@ -73,51 +69,18 @@ export default function InvitePlayers({
           ))}
         </div>
       )}
+      </div>
 
-      {/* Player selector */}
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            type="button"
-            variant="outline"
-            aria-expanded={open}
-            className="w-full justify-between"
-          >
-            {selectedUsers.length > 0
-              ? `${selectedUsers.length} spiller${selectedUsers.length !== 1 ? "e" : ""} valgt`
-              : "Velg spillere..."}
-            <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-full p-0">
-          <Command>
-            <CommandInput placeholder="Søk etter spillere..." />
-            <CommandList>
-              <CommandEmpty>Ingen spillere funnet.</CommandEmpty>
-              <CommandGroup>
-                {otherUsers?.map((user) => (
-                  <CommandItem
-                    key={user._id}
-                    value={user.name}
-                    onSelect={() => {
-                      handleSelect(user._id);
-                      setOpen(false);
-                    }}
-                  >
-                    <CheckIcon
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        value.includes(user._id) ? "opacity-100" : "opacity-0",
-                      )}
-                    />
-                    {user.name}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
-    </div>
+      <Combobox
+        options={options}
+        value={value}
+        onChangeAction={handleComboboxSelect}
+        placeholder="Velg spillere..."
+        emptyText="Ingen spillere funnet."
+        searchPlaceholder="Søk etter spillere..."
+        multiple={true}
+        displayText={displayText}
+      />
+    </>
   );
 }
