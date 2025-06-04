@@ -4,7 +4,7 @@ import { useStoreUserEffect } from "@/components/effects/useStoreUserEffect";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import { SignInButton, UserButton } from "@clerk/nextjs";
 import { Authenticated, Unauthenticated } from "convex/react";
-import GameList from "./game-list";
+import ActiveGames from "./active-games";
 
 export default function Home() {
   const { isLoading } = useStoreUserEffect();
@@ -16,7 +16,7 @@ export default function Home() {
       ) : (
         <>
           <Authenticated>
-            <GameList />
+            <ActiveGames/>
             <UserButton />
             <ModeToggle/>
           </Authenticated>

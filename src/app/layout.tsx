@@ -52,7 +52,9 @@ export default function RootLayout({
         >
           <ConvexClientProvider>
             <div className="flex flex-col h-screen justify-between">
+              <main className="m-4">
               {children}
+              </main>
               <MobileNav>
                 <MobileNavItem icon={<Home/>} label="Hjem" link="/"/>
                 <MobileNavItem icon={<Plus/>} label="Nytt spill" link="/game/new-game"/>
