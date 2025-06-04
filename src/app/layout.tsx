@@ -3,19 +3,48 @@ import ConvexClientProvider from "@/contexts/ConvexProviderWithClerk";
 import { ThemeProvider } from "@/contexts/theme-provider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Home, Plus, User } from "lucide-react";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-    robots: {
-        index: false,
-        follow: false,
-        nocache: false,
-    },
-    appleWebApp: {
-        title: 'Untitled',
-        statusBarStyle: 'black-translucent',
-    }
+  title: 'Kort og Lang',
+  description: 'Hold oversikt, se statistikk, og kjemp om å være den med de beste kortene!',
+  applicationName: "Kort og Lang",
+  creator: "Christoffer Hennie",
+  icons: {
+    icon: [
+        {
+          url: "/web-app-manifest-192x192.png",
+          sizes: "192x192",
+          type: "image/png",
+        },
+        {
+          url: "/web-app-manifest-512x512.png",
+          sizes: "512x512",
+          type: "image/png",
+        }
+    ]
+  },
+  robots: {
+      index: false,
+      follow: false,
+      nocache: false,
+  },
+  appleWebApp: {
+      title: 'Kort og Lang',
+      statusBarStyle: 'default',
+  },
+}
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#1e293b' }
+  ],
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 }
 
 export default function RootLayout({
@@ -37,12 +66,12 @@ export default function RootLayout({
         >
           <ConvexClientProvider>
             <div className="flex flex-col h-screen justify-between">
-            {children}
-            <MobileNav>
-              <MobileNavItem icon={<Home/>} label="Hjem" link="/"/>
-              <MobileNavItem icon={<Plus/>} label="Nytt spill" link="/game/new-game"/>
-              <MobileNavItem icon={<User/>} label="Profil" link="/profile"/>
-            </MobileNav>
+              {children}
+              <MobileNav>
+                <MobileNavItem icon={<Home/>} label="Hjem" link="/"/>
+                <MobileNavItem icon={<Plus/>} label="Nytt spill" link="/game/new-game"/>
+                <MobileNavItem icon={<User/>} label="Profil" link="/profile"/>
+              </MobileNav>
             </div>
           </ConvexClientProvider>
         </ClerkProvider>

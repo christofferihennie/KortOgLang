@@ -7,8 +7,7 @@ export default function manifest(): MetadataRoute.Manifest {
     description: 'Hold oversikt, se statistikk, og kjemp om å være den med de beste kortene!',
     start_url: '/',
     display: 'standalone',
-    background_color: '#ffffff',
-    theme_color: '#000000',
+    theme_color: '#234E6B',
     icons: [
       {
         "src": "/web-app-manifest-192x192.png",
