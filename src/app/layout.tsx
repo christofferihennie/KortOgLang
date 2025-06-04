@@ -1,11 +1,9 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import { ClerkProvider } from "@clerk/nextjs";
+import { MobileNav, MobileNavItem } from "@/components/ui/mobile-nav";
 import ConvexClientProvider from "@/contexts/ConvexProviderWithClerk";
-
-export const metadata: Metadata = {
-  title: "Kort og Lang",
-};
+import { ThemeProvider } from "@/contexts/theme-provider";
+import { ClerkProvider } from "@clerk/nextjs";
+import { Home, Plus, User } from "lucide-react";
+import "./globals.css";
 
 export default function RootLayout({
   children,
@@ -13,13 +11,29 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="no">
+    <html lang="no" suppressHydrationWarning>
       <body>
+       <ThemeProvider
+         attribute="class"
+         defaultTheme="system"
+         enableSystem
+         disableTransitionOnChange
+       >
         <ClerkProvider
           publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
         >
-          <ConvexClientProvider>{children}</ConvexClientProvider>
+          <ConvexClientProvider>
+            <div className="flex flex-col h-screen justify-between">
+            {children}
+            <MobileNav>
+              <MobileNavItem icon={<Home/>} label="Hjem" link="/"/>
+              <MobileNavItem icon={<Plus/>} label="Nytt spill" link="/game/new-game"/>
+              <MobileNavItem icon={<User/>} label="Profil" link="/profile"/>
+            </MobileNav>
+            </div>
+          </ConvexClientProvider>
         </ClerkProvider>
+       </ThemeProvider>
       </body>
     </html>
   );
