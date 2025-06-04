@@ -3,7 +3,20 @@ import ConvexClientProvider from "@/contexts/ConvexProviderWithClerk";
 import { ThemeProvider } from "@/contexts/theme-provider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Home, Plus, User } from "lucide-react";
+import type { Metadata } from "next";
 import "./globals.css";
+
+export const metadata: Metadata = {
+    robots: {
+        index: false,
+        follow: false,
+        nocache: false,
+    },
+    appleWebApp: {
+        title: 'Untitled',
+        statusBarStyle: 'black-translucent',
+    }
+}
 
 export default function RootLayout({
   children,
