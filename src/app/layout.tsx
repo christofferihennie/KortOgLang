@@ -3,24 +3,11 @@ import ConvexClientProvider from "@/contexts/ConvexProviderWithClerk";
 import { ThemeProvider } from "@/contexts/theme-provider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Home, Plus, User } from "lucide-react";
-import type { Metadata, Viewport } from "next";
+import type { Viewport } from "next";
+import { metadata } from "@/lib/metadata";
 import "./globals.css";
 
-export const metadata: Metadata = {
-  title: 'Kort og Lang',
-  description: 'Hold oversikt, se statistikk, og kjemp om å være den med de beste kortene!',
-  applicationName: "Kort og Lang",
-  creator: "Christoffer Hennie",
-  robots: {
-      index: false,
-      follow: false,
-      nocache: false,
-  },
-  appleWebApp: {
-      title: 'Kort og Lang',
-      statusBarStyle: 'black-translucent',
-  },
-}
+export { metadata };
 
 export const viewport: Viewport = {
   themeColor: [
