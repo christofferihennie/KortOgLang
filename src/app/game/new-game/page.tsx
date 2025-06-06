@@ -1,5 +1,9 @@
 "use client";
 
+import { api } from "#/_generated/api";
+import type { Id } from "#/_generated/dataModel";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormDescription,
@@ -7,25 +11,27 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 import { zodv4Resolver } from "@/lib/zodv4Resolver";
+import { Authenticated, Unauthenticated, useMutation } from "convex/react";
+import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod/v4";
 import InvitePlayers from "./invitePlayers";
-import { Authenticated, Unauthenticated, useMutation } from "convex/react";
-import { Button } from "@/components/ui/button";
 import SelectLocation from "./selectLocation";
-import { api } from "#/_generated/api";
-import type { Id } from "#/_generated/dataModel";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2 } from "lucide-react";
 
 const gameSchema = z.object({
   players: z
     .array(z.string())
     .min(1, "Må være minst 2, legg til en til spiller"),
   location: z.string("Venligst velg hvor spillet foregår"),
+  rounds: z
+    .number("Antall runder må være et tall")
+    .min(1, "Må være minst 1 runde")
+    .max(7, "Kan være maks 7 runder"),
 });
 
 export default function NewGame() {
@@ -39,6 +45,7 @@ export default function NewGame() {
     defaultValues: {
       players: [],
       location: "",
+      rounds: 7,
     },
   });
 
@@ -47,7 +54,6 @@ export default function NewGame() {
       setIsSubmitting(true);
       setError(null);
 
-      // Validate that we have both players and location
       if (!values.players || values.players.length === 0) {
         throw new Error("Du må velge minst én spiller");
       }
@@ -56,16 +62,20 @@ export default function NewGame() {
         throw new Error("Du må velge en lokasjon");
       }
 
-      await createEvent({
+      const createdEvent = await createEvent({
         players: values.players as Id<"users">[],
         location: values.location as Id<"locations">,
+        rounds: values.rounds,
       });
 
-      // Success! Redirect to games list or show success message
-      router.push("/");
+      router.push(`/game/active-game/${createdEvent.gameId}`);
     } catch (err) {
       console.error("Error creating game:", err);
-      setError(err instanceof Error ? err.message : "Noe gikk galt ved opprettelse av spillet");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Noe gikk galt ved opprettelse av spillet",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -76,40 +86,65 @@ export default function NewGame() {
       <Authenticated>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+              Start et nytt spill
+            </h2>
+
             {error && (
               <Alert variant="destructive">
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
-            
-            <FormField
-              control={form.control}
-              name="players"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Legg til spillere</FormLabel>
-                  <InvitePlayers {...field} />
-                  <FormDescription>
-                    Velg spillere for å legge de til i spillet
-                  </FormDescription>
-                </FormItem>
-              )}
-            />
-            
+
             <FormField
               control={form.control}
               name="location"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Velg lokasjon</FormLabel>
-                  <SelectLocation {...field} />
+                  <SelectLocation
+                    value={field.value}
+                    onChangeAction={field.onChange}
+                  />
                   <FormDescription>
                     Velg hvor spillet skal foregå
                   </FormDescription>
                 </FormItem>
               )}
             />
-            
+
+            <Separator />
+
+            <FormField
+              control={form.control}
+              name="rounds"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Velg antall runder</FormLabel>
+                  <Input {...field} type="number" />
+                  <FormDescription>
+                    Antall runder som skal spilles
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
+
+            <Separator />
+
+            <FormField
+              control={form.control}
+              name="players"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Legg til spillere</FormLabel>
+                  <InvitePlayers
+                    value={field.value}
+                    onChangeAction={field.onChange}
+                  />
+                </FormItem>
+              )}
+            />
+
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? (
                 <>

@@ -3,23 +3,23 @@ import * as React from "react";
 
 import { Button } from "@/components/ui/button";
 import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
 } from "@/components/ui/command";
 import {
-    Drawer,
-    DrawerContent,
-    DrawerTitle,
-    DrawerTrigger,
+  Drawer,
+  DrawerContent,
+  DrawerTitle,
+  DrawerTrigger,
 } from "@/components/ui/drawer";
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from "@/components/ui/popover";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
@@ -53,7 +53,9 @@ export default function Combobox({
   className,
   disabled = false,
   displayText,
-}: Omit<ComboboxProps, 'onChange'> & { onChangeAction: (value: string | string[]) => void }): React.JSX.Element {
+}: Omit<ComboboxProps, "onChange"> & {
+  onChangeAction: (value: string | string[]) => void;
+}): React.JSX.Element {
   const [open, setOpen] = React.useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
@@ -88,11 +90,7 @@ export default function Combobox({
     <Button
       variant="outline"
       aria-expanded={open}
-      className={cn(
-        "w-[200px]",
-        "justify-between",
-        className
-      )}
+      className={cn("w-full", "justify-between", className)}
       disabled={disabled}
     >
       {getDisplayText()}
@@ -120,7 +118,7 @@ export default function Combobox({
                 <CheckIcon
                   className={cn(
                     "mr-2 h-4 w-4",
-                    isSelected ? "opacity-100" : "opacity-0"
+                    isSelected ? "opacity-100" : "opacity-0",
                   )}
                 />
                 {option.label}
@@ -135,9 +133,7 @@ export default function Combobox({
   if (isDesktop) {
     return (
       <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          {triggerButton}
-        </PopoverTrigger>
+        <PopoverTrigger asChild>{triggerButton}</PopoverTrigger>
         <PopoverContent className={cn("w-[200px]", "p-0")}>
           {commandList}
         </PopoverContent>
@@ -147,16 +143,13 @@ export default function Combobox({
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger asChild>
-        {triggerButton}
-      </DrawerTrigger>
+      <DrawerTrigger asChild>{triggerButton}</DrawerTrigger>
       <DrawerContent>
         <DrawerTitle className="sr-only">
-          {placeholder || (multiple ? "Velg flere alternativer" : "Velg et alternativ")}
+          {placeholder ||
+            (multiple ? "Velg flere alternativer" : "Velg et alternativ")}
         </DrawerTitle>
-        <div className="mt-4 border-t pb-4">
-          {commandList}
-        </div>
+        <div className="mt-4 border-t pb-4">{commandList}</div>
       </DrawerContent>
     </Drawer>
   );
