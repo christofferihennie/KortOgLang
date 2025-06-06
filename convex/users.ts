@@ -1,3 +1,5 @@
+import { v } from "convex/values";
+import { userColors } from "../shared/constants/colors";
 import { mutation, query } from "./_generated/server";
 
 export const store = mutation({
@@ -26,11 +28,58 @@ export const store = mutation({
       }
       return user._id;
     }
+
+    const colors = Object.values(userColors);
+    const color = colors[Math.floor(Math.random() * colors.length)];
+
     // If it's a new identity, create a new `User`.
     return await ctx.db.insert("users", {
       name: identity.name ?? "Anonymous",
       tokenIdentifier: identity.tokenIdentifier,
+      gameColor: color,
     });
+  },
+});
+
+export const getUser = query({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Unauthenticated call to query");
+    }
+
+    return await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier),
+      )
+      .unique();
+  },
+});
+
+export const updateUserGameColor = mutation({
+  args: {
+    color: v.string(),
+  },
+  handler: async (ctx, { color }) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Unauthenticated call to mutation");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier),
+      )
+      .unique();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    await ctx.db.patch(user._id, { gameColor: color });
   },
 });
 
