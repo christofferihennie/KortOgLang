@@ -10,6 +10,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -109,6 +110,7 @@ export default function NewGame() {
                   <FormDescription>
                     Velg hvor spillet skal foregå
                   </FormDescription>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -121,10 +123,11 @@ export default function NewGame() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Velg antall runder</FormLabel>
-                  <Input {...field} type="number" />
+                  <Input inputMode="numeric" type="number" {...field} />
                   <FormDescription>
                     Antall runder som skal spilles
                   </FormDescription>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -141,6 +144,7 @@ export default function NewGame() {
                     value={field.value}
                     onChangeAction={field.onChange}
                   />
+                  <FormMessage />
                 </FormItem>
               )}
             />

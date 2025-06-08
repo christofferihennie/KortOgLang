@@ -68,18 +68,28 @@ export default function RoundTracker(props: {
                   </TableCell>
                   <TableCell>
                     <Input
+                      inputMode="numeric"
                       type="number"
                       value={participant.score}
                       disabled={participant.userId !== user?._id}
                       min={0}
                       onChange={(e) => {
-                        updateUserScore({
-                          roundScoreId: participant._id,
-                          score:
-                            Number.parseInt(e.target.value) > 0
-                              ? Number.parseInt(e.target.value)
-                              : 0,
-                        });
+                        const value = e.target.value;
+
+                        // Allow empty input (user is clearing the field)
+                        if (value === "") {
+                          return;
+                        }
+
+                        const numericValue = Number.parseInt(value);
+
+                        // Only update if it's a valid number and >= 0
+                        if (!Number.isNaN(numericValue) && numericValue >= 0) {
+                          updateUserScore({
+                            roundScoreId: participant._id,
+                            score: numericValue,
+                          });
+                        }
                       }}
                     />
                   </TableCell>
