@@ -66,6 +66,9 @@ export default function RoundTracker(props: {
       </TabsList>
       {roundScores?.map((round) => (
         <TabsContent key={round.roundId} value={round.roundNumber.toString()}>
+          <h4 className="scroll-m-20 leading-7 font-semibold tracking-tight">
+            {round.roundName}:
+          </h4>
           <Table key={round.roundId}>
             <TableHeader>
               <TableRow>

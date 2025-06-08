@@ -4,6 +4,7 @@ import { ThemeSwitcher } from "@/components/ui/theme-switcher";
 import { getAuthToken } from "@/lib/serverSideAuth";
 import { SignOutButton } from "@clerk/nextjs";
 import { preloadQuery } from "convex/nextjs";
+import { Suspense } from "react";
 import DynamicUserProfile from "./dynamicUserProfile";
 import UserGameColor from "./userGameColor";
 
@@ -25,7 +26,9 @@ export default async function ProfilePage() {
           <ThemeSwitcher />
         </span>
       </div>
-      <DynamicUserProfile />
+      <Suspense fallback={<div>Loading...</div>}>
+        <DynamicUserProfile />
+      </Suspense>
     </>
   );
 }
