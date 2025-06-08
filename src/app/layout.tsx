@@ -4,6 +4,7 @@ import ConvexClientProvider from "@/contexts/ConvexProviderWithClerk";
 import { PostHogProvider } from "@/contexts/PostHog-provider";
 import { ThemeProvider } from "@/contexts/theme-provider";
 import { metadata } from "@/lib/metadata";
+import { nbNO } from "@clerk/localizations";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Home, Plus, User } from "lucide-react";
 import type { Viewport } from "next";
@@ -28,16 +29,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="no" suppressHydrationWarning>
-      <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <ClerkProvider
-            publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+    <ClerkProvider
+      publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+      localization={nbNO}
+    >
+      <html lang="no" suppressHydrationWarning>
+        <body>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
           >
             <ConvexClientProvider>
               <PostHogProvider>
@@ -60,9 +62,9 @@ export default function RootLayout({
                 <Toaster />
               </PostHogProvider>
             </ConvexClientProvider>
-          </ClerkProvider>
-        </ThemeProvider>
-      </body>
-    </html>
+          </ThemeProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
