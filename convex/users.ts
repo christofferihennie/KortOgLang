@@ -29,7 +29,7 @@ export const store = mutation({
       return user._id;
     }
 
-    const colors = Object.values(userColors);
+    const colors = Object.keys(userColors);
     const color = colors[Math.floor(Math.random() * colors.length)];
 
     // If it's a new identity, create a new `User`.
