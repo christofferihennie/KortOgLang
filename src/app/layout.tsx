@@ -4,6 +4,7 @@ import ConvexClientProvider from "@/contexts/ConvexProviderWithClerk";
 import { PostHogProvider } from "@/contexts/PostHog-provider";
 import { ThemeProvider } from "@/contexts/theme-provider";
 import { metadata } from "@/lib/metadata";
+import StartupImages from "@/components/StartupImages";
 import { nbNO } from "@clerk/localizations";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Home, Plus, User } from "lucide-react";
@@ -43,6 +44,7 @@ export default function RootLayout({
           >
             <ConvexClientProvider>
               <PostHogProvider>
+                <StartupImages />
                 <div className="h-[100svh] flex flex-col overflow-y-auto">
                   <main className="flex-1 mx-4 mt-6 pb-32">{children}</main>
                   <MobileNav>
