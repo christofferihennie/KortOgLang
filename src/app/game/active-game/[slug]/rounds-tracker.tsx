@@ -18,6 +18,7 @@ import {
   usePreloadedQuery,
   useQuery,
 } from "convex/react";
+import { useEffect, useState } from "react";
 
 export default function RoundTracker(props: {
   preloadedRounds: Preloaded<typeof api.rounds.getRounds>;
@@ -28,6 +29,22 @@ export default function RoundTracker(props: {
   });
   const updateUserScore = useMutation(api.rounds.updateScore);
   const user = useQuery(api.users.getUser);
+
+  // Local state to manage input values
+  const [inputValues, setInputValues] = useState<Record<string, string>>({});
+
+  // Sync server data to local state when it changes
+  useEffect(() => {
+    if (roundScores) {
+      const newInputValues: Record<string, string> = {};
+      for (const round of roundScores) {
+        for (const participant of round.scores) {
+          newInputValues[participant._id] = participant.score.toString();
+        }
+      }
+      setInputValues(newInputValues);
+    }
+  }, [roundScores]);
 
   if (!rounds || rounds.length === 0) {
     return <div>No rounds available</div>;
@@ -70,11 +87,17 @@ export default function RoundTracker(props: {
                     <Input
                       inputMode="numeric"
                       type="number"
-                      value={participant.score}
+                      value={inputValues[participant._id] || ""}
                       disabled={participant.userId !== user?._id}
                       min={0}
                       onChange={(e) => {
                         const value = e.target.value;
+
+                        // Update local state immediately
+                        setInputValues((prev) => ({
+                          ...prev,
+                          [participant._id]: value,
+                        }));
 
                         // Allow empty input (user is clearing the field)
                         if (value === "") {
@@ -83,7 +106,7 @@ export default function RoundTracker(props: {
 
                         const numericValue = Number.parseInt(value);
 
-                        // Only update if it's a valid number and >= 0
+                        // Only update server if it's a valid number and >= 0
                         if (!Number.isNaN(numericValue) && numericValue >= 0) {
                           updateUserScore({
                             roundScoreId: participant._id,
