@@ -38,7 +38,7 @@ export const getFinishedGames = query({
       )
       .filter((item): item is NonNullable<typeof item> => item !== null)
       .sort((a, b) => b.game._creationTime - a.game._creationTime)
-      .slice(0, 5);
+      .slice(0, 10);
 
     if (finishedGamesWithParticipation.length === 0) {
       return [];
@@ -170,7 +170,9 @@ export const getActiveGames = query({
       };
     });
 
-    return results.sort((a, b) => b._creationTime - a._creationTime);
+    return results
+      .filter((game) => game !== undefined)
+      .sort((a, b) => b._creationTime - a._creationTime);
   },
 });
 

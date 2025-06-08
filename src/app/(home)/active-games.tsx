@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Spinner } from "@/components/ui/loading-spinner";
 import { useQuery } from "convex/react";
 import Link from "next/link";
 
@@ -16,23 +17,28 @@ export default function ActiveGames() {
   const activeGames = useQuery(api.games.getActiveGames);
 
   return activeGames !== undefined ? (
-    <div className="max-w-full my-2">
-      <div className="flex gap-2 overflow-y-scroll py-4 pl-2">
-        {activeGames.map((game) => (
-          <ActiveGame
-            key={game._id}
-            id={game._id}
-            creationTime={new Date(game._creationTime)}
-            participants={game.participants}
-            location={game.location?.name || "Ukjent"}
-          />
-        ))}
+    activeGames.length > 0 ? (
+      <div className="max-w-full my-2">
+        <div className="flex gap-2 overflow-y-scroll py-4 pl-2">
+          {activeGames.map((game) => (
+            <ActiveGame
+              key={game._id}
+              id={game._id}
+              creationTime={new Date(game._creationTime)}
+              participants={game.participants}
+              location={game.location?.name || "Ukjent"}
+            />
+          ))}
+        </div>
       </div>
-    </div>
+    ) : (
+      <p className="min-h-52 leading-7 [&:not(:first-child)]:mt-6 text-primary">
+        Ingen aktive spill trykk på plusstegnet nederst for å opprette et nytt
+        spill.
+      </p>
+    )
   ) : (
-    <p className="min-h-52 leading-7 [&:not(:first-child)]:mt-6">
-      Ingen aktive spill trykk på plusstegn for å opprette et nytt spill
-    </p>
+    <Spinner>Laster...</Spinner>
   );
 }
 

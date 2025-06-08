@@ -43,6 +43,7 @@ export const getParticipantsForRounds = query({
       result.push({
         roundId: round._id,
         roundNumber: round.roundNumber,
+        roundName: round.roundName,
         scores: roundScores.map((score) => ({
           _id: score._id,
           userId: score.userId,
