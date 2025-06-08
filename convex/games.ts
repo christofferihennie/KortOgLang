@@ -1,4 +1,5 @@
 import { v } from "convex/values";
+import { round_names_7, round_names_9 } from "../shared/constants/rounds";
 import type { Doc, Id } from "./_generated/dataModel";
 import { mutation, query } from "./_generated/server";
 
@@ -180,7 +181,7 @@ export const createGame = mutation({
   args: {
     players: v.array(v.id("users")),
     location: v.id("locations"),
-    rounds: v.number(),
+    gameType: v.union(v.literal("7 runder"), v.literal("9 runder")),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -201,20 +202,15 @@ export const createGame = mutation({
 
     const createEvent = await ctx.db.insert("games", {
       locationId: args.location,
+      type: args.gameType,
     });
 
-    const round_names = [
-      "Boks, Boks",
-      "Boks, Rems",
-      "Rems, Rems",
-      "Boks, boks, boks",
-      "Boks, boks, rems",
-      "Boks, rems, rems",
-      "Rems, rems, rems",
-    ];
+    const ant_rounds = args.gameType === "9 runder" ? 9 : 7;
+    const round_names =
+      args.gameType === "9 runder" ? round_names_9 : round_names_7;
 
     const rounds: Id<"rounds">[] = [];
-    for (const round of round_names.slice(0, args.rounds)) {
+    for (const round of round_names.slice(0, ant_rounds)) {
       const round_id = await ctx.db.insert("rounds", {
         gameId: createEvent,
         roundName: round,
@@ -223,7 +219,7 @@ export const createGame = mutation({
       rounds.push(round_id);
     }
 
-    if (rounds.length !== args.rounds) {
+    if (rounds.length !== ant_rounds) {
       throw new Error("Failed to create rounds");
     }
 

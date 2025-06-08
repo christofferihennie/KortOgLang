@@ -6,13 +6,15 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Form,
+  FormControl,
   FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { zodv4Resolver } from "@/lib/zodv4Resolver";
 import { Authenticated, Unauthenticated, useMutation } from "convex/react";
@@ -29,10 +31,7 @@ const gameSchema = z.object({
     .array(z.string())
     .min(1, "Må være minst 2, legg til en til spiller"),
   location: z.string("Venligst velg hvor spillet foregår"),
-  rounds: z
-    .number("Antall runder må være et tall")
-    .min(1, "Må være minst 1 runde")
-    .max(7, "Kan være maks 7 runder"),
+  gameType: z.literal(["7 runder", "9 runder"]),
 });
 
 export default function NewGame() {
@@ -46,7 +45,7 @@ export default function NewGame() {
     defaultValues: {
       players: [],
       location: "",
-      rounds: 7,
+      gameType: "7 runder",
     },
   });
 
@@ -66,7 +65,7 @@ export default function NewGame() {
       const createdEvent = await createEvent({
         players: values.players as Id<"users">[],
         location: values.location as Id<"locations">,
-        rounds: values.rounds,
+        gameType: values.gameType,
       });
 
       router.push(`/game/active-game/${createdEvent.gameId}`);
@@ -119,24 +118,59 @@ export default function NewGame() {
 
             <FormField
               control={form.control}
-              name="rounds"
+              name="gameType"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="">
                   <FormLabel>Velg antall runder</FormLabel>
-                  <Input
-                    inputMode="numeric"
-                    type="number"
+                  <RadioGroup
                     value={field.value}
-                    onChange={(e) => {
-                      if (e.target.value === "") {
-                        field.onChange("");
-                      } else if (Number.isInteger(Number(e.target.value))) {
-                        field.onChange(Number(e.target.value));
-                      }
-                    }}
-                  />
+                    onValueChange={field.onChange}
+                    defaultValue="7 runder"
+                    className="flex gap-4"
+                  >
+                    <FormControl>
+                      <div className="flex items-center space-x-2">
+                        <Label
+                          className="has-[[data-state=checked]]:border-ring has-[[data-state=checked]]:bg-primary/5 flex items-start gap-3 rounded-lg border p-3 cursor-pointer"
+                          htmlFor="7-runder"
+                        >
+                          <RadioGroupItem
+                            value="7 runder"
+                            id="7-runder"
+                            className="data-[state=checked]:border-primary"
+                          />
+                          <div className="grid gap-1 font-normal">
+                            <div className="font-medium">7 runder</div>
+                            <div className="text-muted-foreground pr-2 text-xs leading-snug text-balance">
+                              Boks og Rems
+                            </div>
+                          </div>
+                        </Label>
+                      </div>
+                    </FormControl>
+                    <FormControl>
+                      <div className="flex items-center space-x-2">
+                        <Label
+                          className="has-[[data-state=checked]]:border-ring has-[[data-state=checked]]:bg-primary/5 flex items-start gap-3 rounded-lg border p-3 cursor-pointer"
+                          htmlFor="9-runder"
+                        >
+                          <RadioGroupItem
+                            value="9 runder"
+                            id="9-runder"
+                            className="data-[state=checked]:border-primary"
+                          />
+                          <div className="grid gap-1 font-normal">
+                            <div className="font-medium">9 runder</div>
+                            <div className="text-muted-foreground pr-2 text-xs leading-snug text-balance">
+                              Kort og Lang
+                            </div>
+                          </div>
+                        </Label>
+                      </div>
+                    </FormControl>
+                  </RadioGroup>
                   <FormDescription>
-                    Antall runder som skal spilles
+                    Velg antall runder som skal spilles.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

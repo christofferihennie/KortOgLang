@@ -11,6 +11,7 @@ export default defineSchema({
   games: defineTable({
     winnerId: v.optional(v.id("users")),
     locationId: v.id("locations"),
+    type: v.union(v.literal("7 runder"), v.literal("9 runder")),
   }),
 
   gameParticipants: defineTable({
