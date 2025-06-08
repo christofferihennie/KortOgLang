@@ -15,15 +15,16 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { useMutation } from "convex/react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export default function FinishGame({ gameId }: { gameId: Id<"games"> }) {
   const finishGameMutation = useMutation(api.games.finishGame);
+  const router = useRouter();
 
   const finishGame = () => {
     finishGameMutation({ gameId })
-      .then(() => redirect("/"))
+      .then(() => router.push("/"))
       .catch((e) => toast(`Det oppstod en feil: ${e.message}`));
   };
 
