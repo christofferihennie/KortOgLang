@@ -123,7 +123,18 @@ export default function NewGame() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Velg antall runder</FormLabel>
-                  <Input inputMode="numeric" type="number" {...field} />
+                  <Input
+                    inputMode="numeric"
+                    type="number"
+                    value={field.value}
+                    onChange={(e) => {
+                      if (e.target.value === "") {
+                        field.onChange("");
+                      } else if (Number.isInteger(Number(e.target.value))) {
+                        field.onChange(Number(e.target.value));
+                      }
+                    }}
+                  />
                   <FormDescription>
                     Antall runder som skal spilles
                   </FormDescription>
