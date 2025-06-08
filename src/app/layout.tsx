@@ -1,4 +1,5 @@
 import { MobileNav, MobileNavItem } from "@/components/ui/mobile-nav";
+import { Toaster } from "@/components/ui/sonner";
 import ConvexClientProvider from "@/contexts/ConvexProviderWithClerk";
 import { PostHogProvider } from "@/contexts/PostHog-provider";
 import { ThemeProvider } from "@/contexts/theme-provider";
@@ -56,6 +57,7 @@ export default function RootLayout({
                     />
                   </MobileNav>
                 </div>
+                <Toaster />
               </PostHogProvider>
             </ConvexClientProvider>
           </ClerkProvider>

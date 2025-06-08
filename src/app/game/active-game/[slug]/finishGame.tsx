@@ -15,9 +15,17 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { useMutation } from "convex/react";
+import { redirect } from "next/navigation";
+import { toast } from "sonner";
 
 export default function FinishGame({ gameId }: { gameId: Id<"games"> }) {
-  const finishGame = useMutation(api.games.finishGame);
+  const finishGameMutation = useMutation(api.games.finishGame);
+
+  const finishGame = () => {
+    finishGameMutation({ gameId })
+      .then(() => redirect("/"))
+      .catch((e) => toast(`Det oppstod en feil: ${e.message}`));
+  };
 
   return (
     <AlertDialog>
@@ -36,7 +44,7 @@ export default function FinishGame({ gameId }: { gameId: Id<"games"> }) {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Fortsett spillet</AlertDialogCancel>
-          <AlertDialogAction onClick={() => finishGame({ gameId: gameId })}>
+          <AlertDialogAction onClick={finishGame}>
             Avslutt spillet
           </AlertDialogAction>
         </AlertDialogFooter>
