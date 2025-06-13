@@ -29,22 +29,16 @@ export default defineSchema({
     roundNumber: v.number(),
     roundName: v.string(),
     winnerId: v.optional(v.id("users")),
-  })
-    .index("by_game", ["gameId"])
-    .index("by_game_and_round", ["gameId", "roundNumber"])
-    .index("by_winner", ["winnerId"]),
+  }).index("by_game", ["gameId"]),
 
   roundScores: defineTable({
     roundId: v.id("rounds"),
     userId: v.id("users"),
     score: v.number(),
     cardsRemaining: v.optional(v.number()),
-  })
-    .index("by_round", ["roundId"])
-    .index("by_user", ["userId"])
-    .index("by_round_and_user", ["roundId", "userId"]),
+  }).index("by_round", ["roundId"]),
 
   locations: defineTable({
     name: v.string(),
-  }).index("by_name", ["name"]),
+  }),
 });
