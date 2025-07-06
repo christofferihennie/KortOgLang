@@ -2,6 +2,7 @@
 
 import { api } from "#/_generated/api";
 import { userColors } from "%/constants/colors";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -23,6 +24,7 @@ import { useEffect, useState } from "react";
 export default function RoundTracker(props: {
   preloadedRounds: Preloaded<typeof api.rounds.getRounds>;
 }) {
+  const [round, setRound] = useState<string>("1");
   const rounds = usePreloadedQuery(props.preloadedRounds);
   const roundScores = useQuery(api.rounds.getParticipantsForRounds, {
     gameId: rounds[0].gameId,
@@ -50,20 +52,32 @@ export default function RoundTracker(props: {
     return <div>No rounds available</div>;
   }
 
-  const defaultValue = rounds[0]?.roundNumber?.toString() || "1";
-
   return (
-    <Tabs defaultValue={defaultValue}>
-      <TabsList>
-        {rounds.map((round) => (
-          <TabsTrigger
-            key={round.roundNumber}
-            value={round.roundNumber.toString()}
-          >
-            {round.roundNumber}
-          </TabsTrigger>
-        ))}
-      </TabsList>
+    <Tabs value={round}>
+      <div className="flex justify-between">
+        <TabsList>
+          {rounds.map((round) => (
+            <TabsTrigger
+              key={round.roundNumber}
+              value={round.roundNumber.toString()}
+              onClick={() => setRound(round.roundNumber.toString())}
+            >
+              {round.roundNumber}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        <Button
+          type="button"
+          onClick={() => {
+            const nextRound = ((Number.parseInt(round) + 1) % (rounds.length + 1))
+            setRound(
+              nextRound === 0 ? "1" : nextRound.toString()
+            );
+          }}
+        >
+          Neste runde
+        </Button>
+      </div>
       {roundScores?.map((round) => (
         <TabsContent key={round.roundId} value={round.roundNumber.toString()}>
           <h4 className="scroll-m-20 leading-7 font-semibold tracking-tight">
@@ -81,7 +95,11 @@ export default function RoundTracker(props: {
                 <TableRow key={participant._id}>
                   <TableCell>
                     <div
-                      className={`${userColors[(participant.userInfo?.gameColor as keyof typeof userColors) || "slate"]} rounded-md py-4 px-2 w-full`}
+                      className={`${userColors[
+                        (participant.userInfo?.gameColor as keyof typeof userColors) ||
+                        "slate"
+                      ]
+                        } rounded-md py-4 px-2 w-full`}
                     >
                       {participant.userInfo?.name || "Ukjent"}
                     </div>

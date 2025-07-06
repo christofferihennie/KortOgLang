@@ -27,7 +27,7 @@ export default async function GamePage({
       <Header backButton={true}>{location?.name || "Ukjent"}</Header>
       <Podium gameId={gameId} />
       <p className="leading-7">Runde: </p>
-      <div className="flex-1">
+      <div className="flex-1 mb-4">
         <RoundTracker preloadedRounds={rounds} />
       </div>
       <FinishGame gameId={gameId} />

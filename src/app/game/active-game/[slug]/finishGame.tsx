@@ -31,7 +31,7 @@ export default function FinishGame({ gameId }: { gameId: Id<"games"> }) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive" className="w-fit">
+        <Button variant="destructive" className="w-fit scroll-m-20 mb-6">
           Avslutt spillet
         </Button>
       </AlertDialogTrigger>
