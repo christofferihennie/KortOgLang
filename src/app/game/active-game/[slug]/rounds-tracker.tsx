@@ -55,7 +55,7 @@ export default function RoundTracker(props: {
   return (
     <Tabs value={round}>
       <div className="flex justify-between">
-        <TabsList>
+        <TabsList className="overflow-x-scroll">
           {rounds.map((round) => (
             <TabsTrigger
               key={round.roundNumber}
