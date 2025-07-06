@@ -11,9 +11,11 @@ import {
 } from "@/components/ui/table";
 import { humanReadableDate } from "@/lib/utils";
 import { useQuery } from "convex/react";
+import { useRouter } from "next/navigation";
 
 export default function PlayedGames() {
   const finishedGames = useQuery(api.games.getFinishedGames);
+  const router = useRouter();
 
   return (
     <div>
@@ -29,7 +31,11 @@ export default function PlayedGames() {
         </TableHeader>
         <TableBody>
           {finishedGames?.map((game) => (
-            <TableRow key={game._id}>
+            <TableRow
+              key={game._id}
+              className="cursor-pointer"
+              onClick={() => router.push(`/game/finished-game/${game._id}`)}
+            >
               <TableCell>
                 {humanReadableDate(new Date(game._creationTime))}
               </TableCell>

@@ -1,5 +1,6 @@
 import { api } from "#/_generated/api";
 import { Button } from "@/components/ui/button";
+import { Header } from "@/components/ui/header";
 import { ThemeSwitcher } from "@/components/ui/theme-switcher";
 import { getAuthToken } from "@/lib/serverSideAuth";
 import { SignOutButton } from "@clerk/nextjs";
@@ -14,9 +15,7 @@ export default async function ProfilePage() {
 
   return (
     <>
-      <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0 mb-4">
-        Din profil
-      </h2>
+      <Header>Din profil</Header>
       <div className="flex justify-between align-baseline gap-4 my-4">
         <Button variant={"destructive"} asChild>
           <SignOutButton>Logg ut</SignOutButton>

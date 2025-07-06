@@ -372,3 +372,63 @@ export const getGameStanding = query({
     return standings;
   },
 });
+
+const getFinishedGame = query({
+  args: {
+    gameId: v.id("games"),
+  },
+  handler: async (ctx, args) => {
+    const game = await ctx.db.get(args.gameId);
+    if (!game) throw new Error("Game not found");
+
+    const rounds = await ctx.db
+      .query("rounds")
+      .withIndex("by_game", (q) => q.eq("gameId", args.gameId))
+      .collect();
+
+    const scores = await Promise.all(
+      rounds.map(async (round) => {
+        const roundScores = await ctx.db
+          .query("roundScores")
+          .withIndex("by_round", (q) => q.eq("roundId", round._id))
+          .collect();
+
+        const playerScores = roundScores.reduce(
+          (acc, score) => {
+            acc[score.userId] = score.score;
+            return acc;
+          },
+          {} as Record<Id<"users">, number>,
+        );
+
+        return playerScores;
+      }),
+    );
+
+    const totalScores = scores.reduce(
+      (acc, playerScores) => {
+        for (const [userId, score] of Object.entries(playerScores)) {
+          acc[userId as Id<"users">] =
+            (acc[userId as Id<"users">] || 0) + score;
+        }
+        return acc;
+      },
+      {} as Record<Id<"users">, number>,
+    );
+
+    const userIds = Object.keys(totalScores) as Id<"users">[];
+    const users = await Promise.all(
+      userIds.map((userId) => ctx.db.get(userId)),
+    );
+
+    const standings = userIds
+      .map((userId, index) => ({
+        userId,
+        user: users[index],
+        totalScore: totalScores[userId],
+      }))
+      .sort((a, b) => a.totalScore - b.totalScore);
+
+    return standings;
+  },
+});

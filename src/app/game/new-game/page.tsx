@@ -1,5 +1,11 @@
 "use client";
 
+import { Authenticated, Unauthenticated, useMutation } from "convex/react";
+import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod/v4";
 import { api } from "#/_generated/api";
 import type { Id } from "#/_generated/dataModel";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -13,16 +19,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Header } from "@/components/ui/header";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { zodv4Resolver } from "@/lib/zodv4Resolver";
-import { Authenticated, Unauthenticated, useMutation } from "convex/react";
-import { Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod/v4";
 import InvitePlayers from "./invitePlayers";
 import SelectLocation from "./selectLocation";
 
@@ -86,9 +87,7 @@ export default function NewGame() {
       <Authenticated>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-              Start et nytt spill
-            </h2>
+            <Header>Start et nytt spill</Header>
 
             {error && (
               <Alert variant="destructive">

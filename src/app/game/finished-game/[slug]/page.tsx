@@ -3,8 +3,7 @@ import type { Id } from "#/_generated/dataModel";
 import { Header } from "@/components/ui/header";
 import Podium from "@/components/ui/podium";
 import { fetchQuery, preloadQuery } from "convex/nextjs";
-import FinishGame from "./finishGame";
-import RoundTracker from "./rounds-tracker";
+import RoundStats from "./rounds";
 
 export default async function GamePage({
   params,
@@ -27,10 +26,7 @@ export default async function GamePage({
       <Header backButton={true}>{location?.name || "Ukjent"}</Header>
       <Podium gameId={gameId} />
       <p className="leading-7">Runde: </p>
-      <div className="flex-1">
-        <RoundTracker preloadedRounds={rounds} />
-      </div>
-      <FinishGame gameId={gameId} />
+      <RoundStats preloadedRounds={rounds} />
     </div>
   );
 }
