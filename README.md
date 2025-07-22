@@ -134,4 +134,4 @@ The application can be deployed on Vercel with automatic Convex integration:
 
 ## License
 
-This project is private and proprietary.
+This project is under the MIT License.
