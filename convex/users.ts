@@ -97,6 +97,6 @@ export const getUsers = query({
 			throw new Error("Unauthenticated call to query");
 		}
 
-		return await ctx.db.query("users").collect();
+		return await ctx.db.query("users").filter(q => q.neq(q.field("_id"), user._id)).collect();
 	},
 })

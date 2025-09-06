@@ -2,8 +2,8 @@ import { v } from "convex/values";
 import { round_names_7, round_names_9 } from "../shared/constants/rounds";
 import type { Doc, Id } from "./_generated/dataModel";
 import { mutation, query } from "./_generated/server";
-import { api, internal } from "./_generated/api";
-import { getUser, getUserInternal } from "./users";
+import { getUserInternal } from "./users";
+import { memoryUsage } from "process";
 
 export const getFinishedGames = query({
 	args: {
@@ -163,6 +163,7 @@ export const createGame = mutation({
 		players: v.array(v.id("users")),
 		location: v.id("locations"),
 		gameType: v.union(v.literal("7 runder"), v.literal("9 runder")),
+		gameMaster: v.boolean(),
 	},
 	handler: async (ctx, args) => {
 		const identity = await ctx.auth.getUserIdentity();
@@ -184,6 +185,7 @@ export const createGame = mutation({
 		const createEvent = await ctx.db.insert("games", {
 			locationId: args.location,
 			type: args.gameType,
+			gameMaster: args.gameMaster,
 		});
 
 		const ant_rounds = args.gameType === "9 runder" ? 9 : 7;
@@ -206,13 +208,21 @@ export const createGame = mutation({
 
 		const users = [...args.players, user._id];
 
-		const participants: Id<"gameParticipants">[] = [];
-		for (const u of users) {
-			const participant = await ctx.db.insert("gameParticipants", {
-				gameId: createEvent,
-				playerId: u,
-			});
-			participants.push(participant);
+		if (args.gameMaster) {
+			for (const u of users) {
+				await ctx.db.insert("gameParticipants", {
+					gameId: createEvent,
+					playerId: u,
+					gameMaster: u == user._id
+				});
+			}
+		} else {
+			for (const u of users) {
+				await ctx.db.insert("gameParticipants", {
+					gameId: createEvent,
+					playerId: u,
+				});
+			}
 		}
 
 		const roundScores: Id<"roundScores">[] = [];
@@ -354,62 +364,11 @@ export const getGameStanding = query({
 	},
 });
 
-const getFinishedGame = query({
+export const getGameInfo = query({
 	args: {
-		gameId: v.id("games"),
+		gameId: v.id("games")
 	},
-	handler: async (ctx, args) => {
-		const game = await ctx.db.get(args.gameId);
-		if (!game) throw new Error("Game not found");
-
-		const rounds = await ctx.db
-			.query("rounds")
-			.withIndex("by_game", (q) => q.eq("gameId", args.gameId))
-			.collect();
-
-		const scores = await Promise.all(
-			rounds.map(async (round) => {
-				const roundScores = await ctx.db
-					.query("roundScores")
-					.withIndex("by_round", (q) => q.eq("roundId", round._id))
-					.collect();
-
-				const playerScores = roundScores.reduce(
-					(acc, score) => {
-						acc[score.userId] = score.score;
-						return acc;
-					},
-					{} as Record<Id<"users">, number>,
-				);
-
-				return playerScores;
-			}),
-		);
-
-		const totalScores = scores.reduce(
-			(acc, playerScores) => {
-				for (const [userId, score] of Object.entries(playerScores)) {
-					acc[userId as Id<"users">] =
-						(acc[userId as Id<"users">] || 0) + score;
-				}
-				return acc;
-			},
-			{} as Record<Id<"users">, number>,
-		);
-
-		const userIds = Object.keys(totalScores) as Id<"users">[];
-		const users = await Promise.all(
-			userIds.map((userId) => ctx.db.get(userId)),
-		);
-
-		const standings = userIds
-			.map((userId, index) => ({
-				userId,
-				user: users[index],
-				totalScore: totalScores[userId],
-			}))
-			.sort((a, b) => a.totalScore - b.totalScore);
-
-		return standings;
-	},
-});
+	handler: async (ctx, { gameId }) => {
+		return await ctx.db.get(gameId);
+	}
+})
