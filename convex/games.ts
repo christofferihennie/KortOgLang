@@ -15,7 +15,8 @@ export const getFinishedGames = query({
         const query = ctx.db
             .query("gameParticipants")
             .withIndex("by_user", (q) => q.eq("playerId", user._id))
-            .filter((q) => q.neq(q.field("finalPosition"), undefined));
+            .filter((q) => q.neq(q.field("finalPosition"), undefined))
+            .order("desc");
 
         const participations = await (n ? query.take(n) : query.collect());
 

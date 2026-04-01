@@ -1,11 +1,11 @@
 "use client";
 
-import { useQuery } from "convex/react";
-import Link from "next/link";
 import { api } from "#/_generated/api";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/loading-spinner";
+import { useQuery } from "convex/react";
+import Link from "next/link";
 
 export default function ActiveGames() {
     const activeGames = useQuery(api.games.getActiveGames);
