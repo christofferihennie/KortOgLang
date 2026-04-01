@@ -5,15 +5,15 @@ import { dark } from "@clerk/themes";
 import { useTheme } from "next-themes";
 
 export default function DynamicUserProfile() {
-  const { resolvedTheme } = useTheme();
+    const { resolvedTheme } = useTheme();
 
-  return resolvedTheme === "dark" ? (
-    <UserProfile
-      appearance={{
-        baseTheme: dark,
-      }}
-    />
-  ) : (
-    <UserProfile />
-  );
+    return resolvedTheme === "dark" ? (
+        <UserProfile
+            appearance={{
+                baseTheme: dark,
+            }}
+        />
+    ) : (
+        <UserProfile />
+    );
 }
