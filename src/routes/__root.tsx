@@ -1,10 +1,30 @@
-import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router"
+import * as React from "react"
+import { createServerFn } from "@tanstack/react-start"
+import {
+  HeadContent,
+  Outlet,
+  Scripts,
+  createRootRouteWithContext,
+  useRouteContext,
+} from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { TanStackDevtools } from "@tanstack/react-devtools"
-
+import { ConvexBetterAuthProvider } from "@convex-dev/better-auth/react"
 import appCss from "../styles.css?url"
+import type { ConvexQueryClient } from "@convex-dev/react-query"
+import type { QueryClient } from "@tanstack/react-query"
 
-export const Route = createRootRoute({
+import { authClient } from "@/lib/auth-client"
+import { getToken } from "@/lib/auth-server"
+
+const getAuth = createServerFn({ method: "GET" }).handler(async () => {
+  return await getToken()
+})
+
+export const Route = createRootRouteWithContext<{
+  queryClient: QueryClient
+  convexQueryClient: ConvexQueryClient
+}>()({
   head: () => ({
     meta: [
       {
@@ -15,7 +35,7 @@ export const Route = createRootRoute({
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "TanStack Start Starter",
+        title: "Kort og lang",
       },
     ],
     links: [
@@ -23,10 +43,42 @@ export const Route = createRootRoute({
         rel: "stylesheet",
         href: appCss,
       },
+      {
+        rel: "icon",
+        href: "/favicon.ico",
+      },
     ],
   }),
-  shellComponent: RootDocument,
+  beforeLoad: async (ctx) => {
+    const token = await getAuth()
+
+    if (token) {
+      ctx.context.convexQueryClient.serverHttpClient?.setAuth(token)
+    }
+
+    return {
+      isAuthenticated: Boolean(token),
+      token,
+    }
+  },
+  component: RootComponent,
 })
+
+function RootComponent() {
+  const context = useRouteContext({ from: Route.id })
+
+  return (
+    <ConvexBetterAuthProvider
+      client={context.convexQueryClient.convexClient}
+      authClient={authClient}
+      initialToken={context.token}
+    >
+      <RootDocument>
+        <Outlet />
+      </RootDocument>
+    </ConvexBetterAuthProvider>
+  )
+}
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
@@ -42,7 +94,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           }}
           plugins={[
             {
-              name: "Tanstack Router",
+              name: "TanStack Router",
               render: <TanStackRouterDevtoolsPanel />,
             },
           ]}
