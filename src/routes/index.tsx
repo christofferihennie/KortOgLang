@@ -1,12 +1,10 @@
-import { useState } from "react"
 import { convexQuery } from "@convex-dev/react-query"
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { createFileRoute } from "@tanstack/react-router"
+import { Link, createFileRoute } from "@tanstack/react-router"
 import { api } from "../../convex/_generated/api"
-import type { FormEvent } from "react"
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -15,9 +13,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { authClient } from "@/lib/auth-client"
+import { cn } from "@/lib/utils"
 
 export const Route = createFileRoute("/")({
   component: HomePage,
@@ -62,13 +59,13 @@ function HomePage() {
             <Alert className="max-w-xl border-primary/15 bg-background/80 shadow-sm">
               <AlertTitle>What is wired in</AlertTitle>
               <AlertDescription>
-                Convex deployment, Better Auth email/password flows, TanStack
-                Start auth proxy routes, SSR-ready query context, and type-safe
-                frontend env access.
+                Convex deployment, Better Auth email/password plus Google
+                social auth, TanStack Start auth proxy routes, SSR-ready query
+                context, and type-safe frontend env access.
               </AlertDescription>
             </Alert>
           </div>
-          <div>{isAuthenticated ? <AuthenticatedPanel /> : <AuthPanel />}</div>
+          <div>{isAuthenticated ? <AuthenticatedPanel /> : <GuestPanel />}</div>
         </section>
       </div>
     </main>
@@ -143,172 +140,41 @@ function Metric({ label, value }: { label: string; value: string }) {
   )
 }
 
-function AuthPanel() {
-  return (
-    <div className="grid gap-4">
-      <SignInCard />
-      <SignUpCard />
-    </div>
-  )
-}
-
-function SignInCard() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState<string | null>(null)
-  const [pending, setPending] = useState(false)
-
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setPending(true)
-    setError(null)
-
-    await authClient.signIn.email(
-      { email, password },
-      {
-        onRequest: () => setPending(true),
-        onResponse: () => setPending(false),
-        onSuccess: () => {
-          location.reload()
-        },
-        onError: ({ error: authError }: { error: { message?: string } }) => {
-          setError(authError.message || "Unable to sign in.")
-        },
-      }
-    )
-  }
-
+function GuestPanel() {
   return (
     <Card className="border-border/70 bg-background/90 shadow-[0_24px_80px_-40px_rgba(15,23,42,0.4)] backdrop-blur">
       <CardHeader>
-        <CardTitle>Sign in</CardTitle>
+        <CardTitle>Authentication moved into dedicated routes</CardTitle>
         <CardDescription>
-          Use the Better Auth email/password flow proxied through TanStack
-          Start.
+          Use the dedicated auth pages for email/password or Google sign-in,
+          while the home route stays focused on the signed-in experience.
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="sign-in-email">Email</Label>
-            <Input
-              id="sign-in-email"
-              autoComplete="email"
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              required
-            />
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="sign-in-password">Password</Label>
-            <Input
-              id="sign-in-password"
-              autoComplete="current-password"
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              required
-            />
-          </div>
-          {error ? (
-            <Alert variant="destructive">
-              <AlertTitle>Sign-in failed</AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          ) : null}
-          <Button type="submit" disabled={pending}>
-            {pending ? "Signing in..." : "Sign in"}
-          </Button>
-        </form>
+      <CardContent className="space-y-4">
+        <div className="rounded-2xl border border-border/70 bg-muted/50 p-4">
+          <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+            Auth routes
+          </p>
+          <p className="mt-2 text-lg font-medium text-foreground">
+            `/auth/sign-in` and `/auth/sign-up`
+          </p>
+          <p className="mt-2 text-muted-foreground">
+            Google OAuth and Better Auth email flows now live outside the
+            landing page.
+          </p>
+        </div>
       </CardContent>
-    </Card>
-  )
-}
-
-function SignUpCard() {
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState<string | null>(null)
-  const [pending, setPending] = useState(false)
-
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setPending(true)
-    setError(null)
-
-    await authClient.signUp.email(
-      { name, email, password },
-      {
-        onRequest: () => setPending(true),
-        onResponse: () => setPending(false),
-        onSuccess: () => {
-          location.reload()
-        },
-        onError: ({ error: authError }: { error: { message?: string } }) => {
-          setError(authError.message || "Unable to create the account.")
-        },
-      }
-    )
-  }
-
-  return (
-    <Card className="border-border/70 bg-background/85 shadow-[0_24px_80px_-40px_rgba(15,23,42,0.28)] backdrop-blur">
-      <CardHeader>
-        <CardTitle>Create account</CardTitle>
-        <CardDescription>
-          The starter ships with email/password enabled and email verification
-          off.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="sign-up-name">Name</Label>
-              <Input
-                id="sign-up-name"
-                autoComplete="name"
-                value={name}
-                onChange={(event) => setName(event.target.value)}
-                required
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="sign-up-email">Email</Label>
-              <Input
-                id="sign-up-email"
-                autoComplete="email"
-                type="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                required
-              />
-            </div>
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="sign-up-password">Password</Label>
-            <Input
-              id="sign-up-password"
-              autoComplete="new-password"
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              required
-            />
-          </div>
-          {error ? (
-            <Alert variant="destructive">
-              <AlertTitle>Sign-up failed</AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          ) : null}
-          <Button type="submit" disabled={pending}>
-            {pending ? "Creating account..." : "Create account"}
-          </Button>
-        </form>
-      </CardContent>
+      <CardFooter className="gap-3">
+        <Link className={buttonVariants()} to="/auth/sign-in">
+          Sign in
+        </Link>
+        <Link
+          className={cn(buttonVariants({ variant: "outline" }))}
+          to="/auth/sign-up"
+        >
+          Create account
+        </Link>
+      </CardFooter>
     </Card>
   )
 }
