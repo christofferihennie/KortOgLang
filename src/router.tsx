@@ -2,21 +2,18 @@ import { ConvexQueryClient } from "@convex-dev/react-query"
 import { notifyManager } from "@tanstack/query-core"
 import { QueryClient } from "@tanstack/react-query"
 import { createRouter } from "@tanstack/react-router"
-import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query"
 import { routerWithQueryClient } from "@tanstack/react-router-with-query"
 import { ConvexProvider } from "convex/react"
 
-import { routeTree } from "./routeTree.gen"
 import { env } from "@/env"
+import { routeTree } from "./routeTree.gen"
 
 export function getRouter() {
   if (typeof document !== "undefined") {
     notifyManager.setScheduler(window.requestAnimationFrame)
   }
 
-  const convexQueryClient = new ConvexQueryClient(env.VITE_CONVEX_URL, {
-    expectAuth: true,
-  })
+  const convexQueryClient = new ConvexQueryClient(env.VITE_CONVEX_URL)
 
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -53,12 +50,6 @@ export function getRouter() {
     }),
     queryClient
   )
-
-  setupRouterSsrQueryIntegration({
-    router,
-    queryClient,
-  })
-
   return router
 }
 

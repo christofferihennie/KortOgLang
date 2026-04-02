@@ -3,7 +3,6 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { Link, createFileRoute } from "@tanstack/react-router"
 import { api } from "../../convex/_generated/api"
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Card,
@@ -39,32 +38,6 @@ function HomePage() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(14,165,166,0.18),transparent_32%),radial-gradient(circle_at_80%_20%,rgba(245,158,11,0.16),transparent_24%),linear-gradient(180deg,rgba(255,248,235,0.96),rgba(255,255,255,0.98))]" />
       <div className="relative mx-auto flex min-h-svh w-full max-w-6xl flex-col gap-10 px-6 py-10 lg:px-10">
         <section className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
-          <div className="flex flex-col gap-6">
-            <div className="inline-flex w-fit rounded-full border border-border/70 bg-background/80 px-3 py-1 text-xs font-medium tracking-[0.24em] text-muted-foreground uppercase shadow-sm backdrop-blur">
-              TanStack Start + Convex + Better Auth
-            </div>
-            <div className="max-w-2xl space-y-4">
-              <p className="text-sm font-medium tracking-[0.22em] text-primary uppercase">
-                New scaffold
-              </p>
-              <h1 className="max-w-xl text-5xl font-semibold tracking-tight text-balance sm:text-6xl">
-                Typed auth and realtime data in one clean starter.
-              </h1>
-              <p className="max-w-xl text-lg leading-8 text-muted-foreground">
-                This rebuild proxies Better Auth through TanStack Start, keeps
-                Convex ready for SSR queries, and validates app environment
-                variables with `t3-env`.
-              </p>
-            </div>
-            <Alert className="max-w-xl border-primary/15 bg-background/80 shadow-sm">
-              <AlertTitle>What is wired in</AlertTitle>
-              <AlertDescription>
-                Convex deployment, Better Auth email/password plus Google
-                social auth, TanStack Start auth proxy routes, SSR-ready query
-                context, and type-safe frontend env access.
-              </AlertDescription>
-            </Alert>
-          </div>
           <div>{isAuthenticated ? <AuthenticatedPanel /> : <GuestPanel />}</div>
         </section>
       </div>
@@ -117,7 +90,7 @@ function AuthenticatedPanel() {
       </CardContent>
       <CardFooter className="justify-between gap-3">
         <p className="text-sm text-muted-foreground">
-          Sign out reloads the page so `expectAuth: true` resets cleanly.
+          Sign out reloads the page so the auth state resets cleanly.
         </p>
         <Button variant="outline" onClick={handleSignOut}>
           Sign out
