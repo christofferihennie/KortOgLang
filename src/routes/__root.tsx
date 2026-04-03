@@ -14,7 +14,7 @@ import { createServerFn } from "@tanstack/react-start"
 import * as React from "react"
 import appCss from "../styles.css?url"
 
-import { CenterLayout } from "@/components/common"
+import { CenterLayout } from "@/components/common/layout"
 import { authClient } from "@/lib/auth-client"
 import { getToken } from "@/lib/auth-server"
 import { Toaster } from "sonner"
