@@ -1,6 +1,5 @@
-import { Outlet, createFileRoute, redirect } from "@tanstack/react-router"
-
-import { AuthShell } from "@/components/auth/auth-shell"
+import { SignIn } from "@/features/auth/sign-in"
+import { createFileRoute, redirect } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/auth")({
   beforeLoad: ({ context }) => {
@@ -8,18 +7,5 @@ export const Route = createFileRoute("/auth")({
       throw redirect({ to: "/" })
     }
   },
-  component: AuthLayout,
+  component: SignIn,
 })
-
-function AuthLayout() {
-  return (
-    <AuthShell
-      badge="Better Auth access"
-      eyebrow="Dedicated auth routes"
-      title="Sign in without turning the home page into a form dump."
-      description="Authentication now lives in its own route flow, with Google social sign-in and email/password support sharing the same Better Auth backend."
-    >
-      <Outlet />
-    </AuthShell>
-  )
-}
