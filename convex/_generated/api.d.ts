@@ -10,6 +10,7 @@
 
 import type * as auth from "../auth.js";
 import type * as env from "../env.js";
+import type * as games_createGame from "../games/createGame.js";
 import type * as http from "../http.js";
 
 import type {
@@ -21,6 +22,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   env: typeof env;
+  "games/createGame": typeof games_createGame;
   http: typeof http;
 }>;
 

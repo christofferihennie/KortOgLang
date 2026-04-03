@@ -1,15 +1,29 @@
-import { betterAuth } from "better-auth/minimal"
 import { createClient } from "@convex-dev/better-auth"
 import { convex } from "@convex-dev/better-auth/plugins"
+import { betterAuth } from "better-auth/minimal"
 
-import authConfig from "./auth.config"
-import { components } from "./_generated/api"
-import { query } from "./_generated/server"
-import { env } from "./env"
-import type { GenericCtx } from "@convex-dev/better-auth"
+import type { AuthFunctions, GenericCtx } from "@convex-dev/better-auth"
+import { components, internal } from "./_generated/api"
 import type { DataModel } from "./_generated/dataModel"
+import { query, QueryCtx } from "./_generated/server"
+import authConfig from "./auth.config"
+import { env } from "./env"
 
-export const authComponent = createClient<DataModel>(components.betterAuth)
+const authFunctions: AuthFunctions = internal.auth
+
+export const authComponent = createClient<DataModel>(components.betterAuth, {
+  authFunctions,
+  triggers: {
+    user: {
+      onCreate: async (ctx, doc) => {
+        await ctx.db.insert("users", {
+          name: doc.name,
+          betterAuthId: doc._id,
+        })
+      },
+    },
+  },
+})
 
 export const createAuth = (ctx: GenericCtx<DataModel>) => {
   return betterAuth({
@@ -37,3 +51,13 @@ export const getCurrentUser = query({
     return await authComponent.getAuthUser(ctx)
   },
 })
+
+export async function getCurrentUserOrThrow(ctx: QueryCtx) {
+  const identity = await ctx.auth.getUserIdentity()
+  if (identity === null) {
+    throw new Error("Not authenticated")
+  }
+  return identity
+}
+
+export const { onCreate } = authComponent.triggersApi()
