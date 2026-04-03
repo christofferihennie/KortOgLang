@@ -1,9 +1,4 @@
-import {
-  ComputerSettingsIcon,
-  Moon02Icon,
-  Sun03Icon,
-} from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
+import { MonitorCogIcon, MoonIcon, SunIcon } from "lucide-react"
 import { useTheme } from "next-themes"
 import * as React from "react"
 
@@ -15,19 +10,19 @@ const OPTIONS = [
     value: "light",
     label: "Lys modus",
     description: "Bruk alltid lys modus.",
-    icon: Sun03Icon,
+    icon: SunIcon,
   },
   {
     value: "dark",
-    label: "Mørk Modus",
+    label: "Mørk modus",
     description: "Bruk alltid mørk modus.",
-    icon: Moon02Icon,
+    icon: MoonIcon,
   },
   {
     value: "system",
     label: "System",
     description: "Følg system preferanser.",
-    icon: ComputerSettingsIcon,
+    icon: MonitorCogIcon,
   },
 ] as const
 
@@ -71,11 +66,7 @@ export function ThemeSettingsCard() {
                         : "bg-background/70"
                     )}
                   >
-                    <HugeiconsIcon
-                      icon={option.icon}
-                      className="size-4"
-                      strokeWidth={2}
-                    />
+                    <option.icon className="size-4" />
                   </span>
                   <span className="flex min-w-0 flex-1 flex-col gap-0.5">
                     <span className="text-sm font-semibold">

@@ -15,6 +15,7 @@
     const root = document.documentElement
     root.classList.toggle("dark", resolvedTheme === "dark")
     root.style.colorScheme = resolvedTheme
+    // oxlint-disable-next-line no-unused-vars
   } catch (_error) {
     // Ignore storage and media-query access failures during bootstrap.
   }

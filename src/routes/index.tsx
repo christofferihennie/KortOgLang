@@ -1,8 +1,7 @@
 import { convexQuery } from "@convex-dev/react-query"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { Link, createFileRoute } from "@tanstack/react-router"
-import { Settings02Icon } from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
+import { SettingsIcon } from "lucide-react"
 import { api } from "../../convex/_generated/api"
 
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -42,7 +41,7 @@ function HomePage() {
           className={cn(buttonVariants({ variant: "outline" }), "gap-2")}
           to="/settings"
         >
-          <HugeiconsIcon icon={Settings02Icon} className="size-4" strokeWidth={2} />
+          <SettingsIcon className="size-4" />
           Settings
         </Link>
       </div>
