@@ -33,16 +33,7 @@ function HomePage() {
     select: (context) => context.isAuthenticated,
   })
 
-  return (
-    <main className="relative min-h-svh overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(14,165,166,0.18),transparent_32%),radial-gradient(circle_at_80%_20%,rgba(245,158,11,0.16),transparent_24%),linear-gradient(180deg,rgba(255,248,235,0.96),rgba(255,255,255,0.98))]" />
-      <div className="relative mx-auto flex min-h-svh w-full max-w-6xl flex-col gap-10 px-6 py-10 lg:px-10">
-        <section className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
-          <div>{isAuthenticated ? <AuthenticatedPanel /> : <GuestPanel />}</div>
-        </section>
-      </div>
-    </main>
-  )
+  return <div>{isAuthenticated ? <AuthenticatedPanel /> : <GuestPanel />}</div>
 }
 
 function AuthenticatedPanel() {

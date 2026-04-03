@@ -1,5 +1,7 @@
-import * as React from "react"
-import { createServerFn } from "@tanstack/react-start"
+import { ConvexBetterAuthProvider } from "@convex-dev/better-auth/react"
+import type { ConvexQueryClient } from "@convex-dev/react-query"
+import { TanStackDevtools } from "@tanstack/react-devtools"
+import type { QueryClient } from "@tanstack/react-query"
 import {
   HeadContent,
   Outlet,
@@ -8,14 +10,14 @@ import {
   useRouteContext,
 } from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
-import { TanStackDevtools } from "@tanstack/react-devtools"
-import { ConvexBetterAuthProvider } from "@convex-dev/better-auth/react"
+import { createServerFn } from "@tanstack/react-start"
+import * as React from "react"
 import appCss from "../styles.css?url"
-import type { ConvexQueryClient } from "@convex-dev/react-query"
-import type { QueryClient } from "@tanstack/react-query"
 
+import { CenterLayout } from "@/components/common"
 import { authClient } from "@/lib/auth-client"
 import { getToken } from "@/lib/auth-server"
+import { Toaster } from "sonner"
 
 const getAuth = createServerFn({ method: "GET" }).handler(async () => {
   return await getToken()
@@ -87,7 +89,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        {children}
+        <CenterLayout>{children}</CenterLayout>
+        <Toaster richColors={true} />
         <TanStackDevtools
           config={{
             position: "bottom-right",
