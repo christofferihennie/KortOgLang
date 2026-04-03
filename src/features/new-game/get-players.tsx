@@ -1,5 +1,3 @@
 export function GetPlayers() {
-    return (
-        
-    )
+  return null
 }

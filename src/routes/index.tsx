@@ -1,6 +1,8 @@
 import { convexQuery } from "@convex-dev/react-query"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { Link, createFileRoute } from "@tanstack/react-router"
+import { Settings02Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import { api } from "../../convex/_generated/api"
 
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -33,7 +35,20 @@ function HomePage() {
     select: (context) => context.isAuthenticated,
   })
 
-  return <div>{isAuthenticated ? <AuthenticatedPanel /> : <GuestPanel />}</div>
+  return (
+    <main className="space-y-4 py-8">
+      <div className="flex justify-end">
+        <Link
+          className={cn(buttonVariants({ variant: "outline" }), "gap-2")}
+          to="/settings"
+        >
+          <HugeiconsIcon icon={Settings02Icon} className="size-4" strokeWidth={2} />
+          Settings
+        </Link>
+      </div>
+      {isAuthenticated ? <AuthenticatedPanel /> : <GuestPanel />}
+    </main>
+  )
 }
 
 function AuthenticatedPanel() {
@@ -129,13 +144,10 @@ function GuestPanel() {
         </div>
       </CardContent>
       <CardFooter className="gap-3">
-        <Link className={buttonVariants()} to="/auth/sign-in">
+        <Link className={buttonVariants()} to="/auth">
           Sign in
         </Link>
-        <Link
-          className={cn(buttonVariants({ variant: "outline" }))}
-          to="/auth/sign-up"
-        >
+        <Link className={cn(buttonVariants({ variant: "outline" }))} to="/auth">
           Create account
         </Link>
       </CardFooter>

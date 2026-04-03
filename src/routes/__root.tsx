@@ -13,11 +13,13 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { createServerFn } from "@tanstack/react-start"
 import * as React from "react"
 import appCss from "../styles.css?url"
+import themeInitScript from "@/features/settings/theme-init-script.ts?raw"
 
 import { CenterLayout } from "@/components/common/layout"
+import { ThemeProvider } from "@/features/settings/theme-provider"
+import { Toaster } from "@/components/ui/sonner"
 import { authClient } from "@/lib/auth-client"
 import { getToken } from "@/lib/auth-server"
-import { Toaster } from "sonner"
 
 const getAuth = createServerFn({ method: "GET" }).handler(async () => {
   return await getToken()
@@ -84,25 +86,32 @@ function RootComponent() {
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: themeInitScript,
+          }}
+        />
       </head>
       <body>
-        <CenterLayout>{children}</CenterLayout>
-        <Toaster richColors={true} />
-        <TanStackDevtools
-          config={{
-            position: "bottom-right",
-          }}
-          plugins={[
-            {
-              name: "TanStack Router",
-              render: <TanStackRouterDevtoolsPanel />,
-            },
-          ]}
-        />
-        <Scripts />
+        <ThemeProvider>
+          <CenterLayout>{children}</CenterLayout>
+          <Toaster richColors={true} />
+          <TanStackDevtools
+            config={{
+              position: "bottom-right",
+            }}
+            plugins={[
+              {
+                name: "TanStack Router",
+                render: <TanStackRouterDevtoolsPanel />,
+              },
+            ]}
+          />
+          <Scripts />
+        </ThemeProvider>
       </body>
     </html>
   )
