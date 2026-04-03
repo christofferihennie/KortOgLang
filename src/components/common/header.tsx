@@ -1,19 +1,16 @@
 import { cn } from "@/lib/utils"
-import { Link } from "@tanstack/react-router"
-import { ArrowLeftIcon } from "lucide-react"
-import { buttonVariants } from "../ui/button"
 import { PrimaryHeader, QuaternaryHeader } from "./text"
 
 export function Header({
   title,
   subtitle,
-  back,
   className,
+  children,
 }: {
   title: string
   subtitle?: string
-  back?: boolean
   className?: string
+  children?: React.ReactNode
 }) {
   return (
     <header
@@ -26,14 +23,7 @@ export function Header({
         <PrimaryHeader>{title}</PrimaryHeader>
         {subtitle && <QuaternaryHeader>{subtitle}</QuaternaryHeader>}
       </div>
-      {back && (
-        <Link
-          to=".."
-          className={buttonVariants({ variant: "link", size: "icon" })}
-        >
-          <ArrowLeftIcon className="size-6 text-foreground" />
-        </Link>
-      )}
+      {children}
     </header>
   )
 }

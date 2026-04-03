@@ -1,3 +1,4 @@
+import themeInitScript from "@/features/settings/theme-init-script.ts?raw"
 import { ConvexBetterAuthProvider } from "@convex-dev/better-auth/react"
 import type { ConvexQueryClient } from "@convex-dev/react-query"
 import { TanStackDevtools } from "@tanstack/react-devtools"
@@ -13,11 +14,11 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { createServerFn } from "@tanstack/react-start"
 import * as React from "react"
 import appCss from "../styles.css?url"
-import themeInitScript from "@/features/settings/theme-init-script.ts?raw"
 
 import { CenterLayout } from "@/components/common/layout"
-import { ThemeProvider } from "@/features/settings/theme-provider"
+import { MenuBar } from "@/components/common/navigation"
 import { Toaster } from "@/components/ui/sonner"
+import { ThemeProvider } from "@/features/settings/theme-provider"
 import { authClient } from "@/lib/auth-client"
 import { getToken } from "@/lib/auth-server"
 
@@ -97,7 +98,10 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <ThemeProvider>
-          <CenterLayout>{children}</CenterLayout>
+          <CenterLayout className="mb-32">
+            {children}
+            <MenuBar />
+          </CenterLayout>
           <Toaster richColors={true} />
           <TanStackDevtools
             config={{

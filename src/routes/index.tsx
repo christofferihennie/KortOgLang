@@ -1,9 +1,9 @@
 import { convexQuery } from "@convex-dev/react-query"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { Link, createFileRoute } from "@tanstack/react-router"
-import { SettingsIcon } from "lucide-react"
 import { api } from "../../convex/_generated/api"
 
+import { Header } from "@/components/common/header"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Card,
@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/card"
 import { authClient } from "@/lib/auth-client"
 import { cn } from "@/lib/utils"
+import { SettingsIcon } from "lucide-react"
 
 export const Route = createFileRoute("/")({
   component: HomePage,
@@ -35,18 +36,19 @@ function HomePage() {
   })
 
   return (
-    <main className="space-y-4 py-8">
-      <div className="flex justify-end">
+    <>
+      <Header title="Kort og Lang">
         <Link
-          className={cn(buttonVariants({ variant: "outline" }), "gap-2")}
           to="/settings"
+          className={buttonVariants({ variant: "link", size: "icon" })}
         >
-          <SettingsIcon className="size-4" />
-          Settings
+          <SettingsIcon className="size-6 text-foreground" />
         </Link>
-      </div>
-      {isAuthenticated ? <AuthenticatedPanel /> : <GuestPanel />}
-    </main>
+      </Header>
+      <main className="space-y-4 py-6">
+        {isAuthenticated ? <AuthenticatedPanel /> : <GuestPanel />}
+      </main>
+    </>
   )
 }
 

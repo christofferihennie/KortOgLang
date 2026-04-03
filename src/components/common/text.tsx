@@ -10,7 +10,7 @@ export function PrimaryHeader({ children, className }: TextComponentProps) {
   return (
     <h1
       className={cn(
-        "scroll-m-20 text-4xl font-extrabold tracking-tight text-balance",
+        "scroll-m-20 text-3xl font-extrabold tracking-tight text-balance",
         className
       )}
     >
@@ -23,7 +23,7 @@ export function SecondaryHeader({ children, className }: TextComponentProps) {
   return (
     <h1
       className={cn(
-        "scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0",
+        "scroll-m-20 pb-2 text-2xl font-semibold tracking-tight first:mt-0",
         className
       )}
     >
@@ -37,7 +37,7 @@ export function TertiaryHeader({ children, className }: TextComponentProps) {
     <h3
       className={cn(
         className,
-        "scroll-m-20 text-2xl font-semibold tracking-tight"
+        "scroll-m-20 text-xl font-semibold tracking-tight text-foreground/75"
       )}
     >
       {children}
@@ -50,7 +50,7 @@ export function QuaternaryHeader({ children, className }: TextComponentProps) {
     <h4
       className={cn(
         className,
-        "scroll-m-20 text-xl font-semibold tracking-tight"
+        "scroll-m-20 text-xl font-medium tracking-tight text-foreground/75"
       )}
     >
       {children}
