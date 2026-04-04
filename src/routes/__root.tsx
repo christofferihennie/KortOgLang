@@ -17,9 +17,11 @@ import appCss from "../styles.css?url"
 
 import { CenterLayout } from "@/components/common/layout"
 import { MenuBar } from "@/components/common/navigation"
+import { PwaRegistration } from "@/components/common/pwa-registration"
 import { Toaster } from "@/components/ui/sonner"
 import { ThemeProvider } from "@/features/settings/theme-provider"
 import { authClient } from "@/lib/auth-client"
+import { pwaLinks, pwaMeta } from "@/lib/pwa"
 import { getToken } from "@/lib/auth-server"
 
 const getAuth = createServerFn({ method: "GET" }).handler(async () => {
@@ -37,11 +39,12 @@ export const Route = createRootRouteWithContext<{
       },
       {
         name: "viewport",
-        content: "width=device-width, initial-scale=1",
+        content: "width=device-width, initial-scale=1, viewport-fit=cover",
       },
       {
         title: "Kort og lang",
       },
+      ...pwaMeta,
     ],
     links: [
       {
@@ -52,6 +55,7 @@ export const Route = createRootRouteWithContext<{
         rel: "icon",
         href: "/favicon.ico",
       },
+      ...pwaLinks,
     ],
   }),
   beforeLoad: async (ctx) => {
@@ -87,7 +91,7 @@ function RootComponent() {
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="no" suppressHydrationWarning>
       <head>
         <HeadContent />
         <script
@@ -114,6 +118,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
               },
             ]}
           />
+          <PwaRegistration />
           <Scripts />
         </ThemeProvider>
       </body>

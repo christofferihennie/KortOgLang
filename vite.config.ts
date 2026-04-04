@@ -36,7 +36,9 @@ function getManualChunk(id: string) {
 
 function shouldIgnoreBuildWarning(message: string) {
   return (
-    message.includes('Module level directives cause errors when bundled, "use client"') ||
+    message.includes(
+      'Module level directives cause errors when bundled, "use client"'
+    ) ||
     message.includes("Generated an empty chunk:") ||
     (message.includes("imported from external module") &&
       message.includes("but never used in"))
