@@ -1,8 +1,10 @@
 import { v } from "convex/values"
+import { DEFAULT_GAME_TYPE, ROUND_NAMES } from "../../shared/game"
 import { mutation, query } from "../_generated/server"
 import { getCurrentUserOrThrow } from "../auth"
 
 export const getLocations = query({
+  args: {},
   handler: async (ctx) => {
     const locations = await ctx.db.query("locations").collect()
 
@@ -14,6 +16,7 @@ export const getLocations = query({
 })
 
 export const getPossiblePlayers = query({
+  args: {},
   handler: async (ctx) => {
     const users = await ctx.db.query("users").collect()
 
@@ -35,8 +38,8 @@ export const createGame = mutation({
 
     const game = await ctx.db.insert("games", {
       locationId: location,
-      type: "7 runder",
-      gameMaster: gameMaster,
+      type: DEFAULT_GAME_TYPE,
+      gameMaster,
     })
 
     const user = await ctx.db
@@ -48,7 +51,7 @@ export const createGame = mutation({
 
     console.info(user)
 
-    const _participants = await Promise.all(
+    await Promise.all(
       players.map(async (player) => {
         return await ctx.db.insert("gameParticipants", {
           gameId: game,
@@ -58,18 +61,8 @@ export const createGame = mutation({
       })
     )
 
-    const ROUNDS = [
-      "Boks, Boks",
-      "Boks, Rems",
-      "Rems, Rems",
-      "Boks, Boks, Rems",
-      "Boks, Rems, Rems",
-      "Boks, Boks, Boks",
-      "Rems, Rems, Rems",
-    ]
-
-    const _rounds = await Promise.all(
-      ROUNDS.map(async (round, idx) => {
+    await Promise.all(
+      ROUND_NAMES.map(async (round, idx) => {
         return await ctx.db.insert("rounds", {
           gameId: game,
           roundName: round,

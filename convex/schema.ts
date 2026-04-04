@@ -1,5 +1,8 @@
 import { defineSchema, defineTable } from "convex/server"
 import { v } from "convex/values"
+import { GAME_TYPES } from "../shared/game"
+
+const [sevenRoundGameType, nineRoundGameType] = GAME_TYPES
 
 export default defineSchema({
   users: defineTable({
@@ -14,7 +17,7 @@ export default defineSchema({
   games: defineTable({
     winnerId: v.optional(v.id("users")),
     locationId: v.id("locations"),
-    type: v.union(v.literal("7 runder"), v.literal("9 runder")),
+    type: v.union(v.literal(sevenRoundGameType), v.literal(nineRoundGameType)),
     gameMaster: v.optional(v.boolean()),
   }),
 

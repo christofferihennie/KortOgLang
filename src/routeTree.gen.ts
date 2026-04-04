@@ -14,7 +14,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as GamesNewRouteImport } from './routes/games.new'
 import { Route as GamesHistoryRouteImport } from './routes/games.history'
-import { Route as GamesGameGameIdRouteImport } from './routes/games.game.$gameId'
+import { Route as GameGameIdRouteImport } from './routes/game.$gameId'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
 const SettingsRoute = SettingsRouteImport.update({
@@ -42,9 +42,9 @@ const GamesHistoryRoute = GamesHistoryRouteImport.update({
   path: '/games/history',
   getParentRoute: () => rootRouteImport,
 } as any)
-const GamesGameGameIdRoute = GamesGameGameIdRouteImport.update({
-  id: '/games/game/$gameId',
-  path: '/games/game/$gameId',
+const GameGameIdRoute = GameGameIdRouteImport.update({
+  id: '/game/$gameId',
+  path: '/game/$gameId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
@@ -57,29 +57,29 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/settings': typeof SettingsRoute
+  '/game/$gameId': typeof GameGameIdRoute
   '/games/history': typeof GamesHistoryRoute
   '/games/new': typeof GamesNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/games/game/$gameId': typeof GamesGameGameIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/settings': typeof SettingsRoute
+  '/game/$gameId': typeof GameGameIdRoute
   '/games/history': typeof GamesHistoryRoute
   '/games/new': typeof GamesNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/games/game/$gameId': typeof GamesGameGameIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/settings': typeof SettingsRoute
+  '/game/$gameId': typeof GameGameIdRoute
   '/games/history': typeof GamesHistoryRoute
   '/games/new': typeof GamesNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/games/game/$gameId': typeof GamesGameGameIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -87,38 +87,38 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/settings'
+    | '/game/$gameId'
     | '/games/history'
     | '/games/new'
     | '/api/auth/$'
-    | '/games/game/$gameId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
     | '/settings'
+    | '/game/$gameId'
     | '/games/history'
     | '/games/new'
     | '/api/auth/$'
-    | '/games/game/$gameId'
   id:
     | '__root__'
     | '/'
     | '/auth'
     | '/settings'
+    | '/game/$gameId'
     | '/games/history'
     | '/games/new'
     | '/api/auth/$'
-    | '/games/game/$gameId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
   SettingsRoute: typeof SettingsRoute
+  GameGameIdRoute: typeof GameGameIdRoute
   GamesHistoryRoute: typeof GamesHistoryRoute
   GamesNewRoute: typeof GamesNewRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
-  GamesGameGameIdRoute: typeof GamesGameGameIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -158,11 +158,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GamesHistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/games/game/$gameId': {
-      id: '/games/game/$gameId'
-      path: '/games/game/$gameId'
-      fullPath: '/games/game/$gameId'
-      preLoaderRoute: typeof GamesGameGameIdRouteImport
+    '/game/$gameId': {
+      id: '/game/$gameId'
+      path: '/game/$gameId'
+      fullPath: '/game/$gameId'
+      preLoaderRoute: typeof GameGameIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/auth/$': {
@@ -179,10 +179,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   SettingsRoute: SettingsRoute,
+  GameGameIdRoute: GameGameIdRoute,
   GamesHistoryRoute: GamesHistoryRoute,
   GamesNewRoute: GamesNewRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
-  GamesGameGameIdRoute: GamesGameGameIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
