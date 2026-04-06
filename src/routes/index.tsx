@@ -16,8 +16,14 @@ import {
 import { authClient } from "@/lib/auth-client"
 import { cn } from "@/lib/utils"
 import { SettingsIcon } from "lucide-react"
+import { useEffect, useRef } from "react"
+import { toast } from "sonner"
+import z from "zod"
 
 export const Route = createFileRoute("/")({
+  validateSearch: z.object({
+    accessDenied: z.literal("1").optional(),
+  }),
   component: HomePage,
   loader: async ({ context }) => {
     if (!context.isAuthenticated) {
@@ -25,15 +31,38 @@ export const Route = createFileRoute("/")({
     }
 
     await context.queryClient.ensureQueryData(
-      convexQuery(api.auth.getCurrentUser, {})
+      convexQuery(api.auth.getCurrentBetterAuthUser, {})
     )
   },
 })
 
 function HomePage() {
+  const navigate = Route.useNavigate()
   const isAuthenticated = Route.useRouteContext({
     select: (context) => context.isAuthenticated,
   })
+  const { accessDenied } = Route.useSearch()
+  const lastToastKeyRef = useRef<string | null>(null)
+
+  useEffect(() => {
+    if (!accessDenied) {
+      lastToastKeyRef.current = null
+      return
+    }
+
+    if (lastToastKeyRef.current === accessDenied) {
+      return
+    }
+
+    lastToastKeyRef.current = accessDenied
+    toast.error("Du har ikke tilgang til dette spillet.")
+
+    void navigate({
+      to: "/",
+      replace: true,
+      search: {},
+    })
+  }, [accessDenied, navigate])
 
   return (
     <>
@@ -54,7 +83,7 @@ function HomePage() {
 
 function AuthenticatedPanel() {
   const { data: user } = useSuspenseQuery(
-    convexQuery(api.auth.getCurrentUser, {})
+    convexQuery(api.auth.getCurrentBetterAuthUser, {})
   )
 
   const handleSignOut = async () => {

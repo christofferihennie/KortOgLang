@@ -1,7 +1,1 @@
-export {
-  DEFAULT_GAME_TYPE,
-  GAME_TYPES,
-  ROUND_NAMES,
-  type GameType,
-  type RoundName,
-} from "../../shared/game"
+export { DEFAULT_GAME_TYPE, GAME_TYPES, type GameType } from "../../shared/game"

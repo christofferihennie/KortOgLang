@@ -9,15 +9,19 @@ import { useMutation } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 import { api } from "convex/_generated/api"
 import type { Id } from "convex/_generated/dataModel"
+import type { GameType as GameTypeValue } from "shared/game"
+import { DEFAULT_GAME_TYPE, GAME_TYPES } from "shared/game"
 import { toast } from "sonner"
 import z from "zod"
 import { GameMaster } from "./game-master"
+import { GameType } from "./game-type"
 import { SelectPlayers } from "./select-players"
 import { SetLocation } from "./set-location"
 
 const newGameSchema = z.object({
   players: z.array(z.string()).min(2, "Må være minst to spillere"),
   location: z.string().min(1, "Vennligst velg et sted"),
+  type: z.enum(GAME_TYPES),
   gameMaster: z.boolean(),
 })
 
@@ -31,6 +35,7 @@ const { useAppForm } = createFormHook({
     SetLocation,
     GameMaster,
     SelectPlayers,
+    GameType,
   },
   formComponents: {},
 })
@@ -53,22 +58,24 @@ export function NewGameForm({
       players: [] as Array<string>,
       location: "",
       gameMaster: false,
+      type: DEFAULT_GAME_TYPE satisfies GameTypeValue,
     },
     validators: {
       onSubmit: newGameSchema,
     },
     onSubmit: async (v) => {
-      const { gameMaster, location, players: participatns } = v.value
+      const { gameMaster, location, players: participatns, type } = v.value
 
       try {
         const gameId = await mutateAsync({
           location: location as Id<"locations">,
           players: participatns as Array<Id<"users">>,
           gameMaster,
+          type,
         })
 
         await navigate({
-          to: "/games/game/$gameId",
+          to: "/game/$gameId",
           params: { gameId },
         })
       } catch (e) {
@@ -98,6 +105,21 @@ export function NewGameForm({
               label="Lokasjon"
               description="Velg hvor spillet skal ta sted"
               items={locations}
+            />
+          )}
+        />
+        <form.AppField
+          name="type"
+          children={(field) => (
+            <field.GameType
+              label="Type"
+              description="Velg hva slags type spill som skal spilles"
+              options={GAME_TYPES.map((type) => ({
+                value: type,
+                label: type,
+                description:
+                  type === "7 runder" ? "Boks og Rems" : "Kort og Lang",
+              }))}
             />
           )}
         />

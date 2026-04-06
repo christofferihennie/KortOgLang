@@ -23,7 +23,7 @@ function SettingsPage() {
         </Link>
       </Header>
       <main>
-        <section className="space-y-6 pt-6">
+        <section className="space-y-6">
           {/* Color theme switcher */}
           <div className="space-y-2">
             <TertiaryHeader>Utseende</TertiaryHeader>

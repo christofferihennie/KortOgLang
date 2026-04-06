@@ -16,7 +16,7 @@ export function Header({
     <header
       className={cn(
         className,
-        "-mx-2 flex items-center justify-between border-b py-4"
+        "-mx-2 mb-4 flex items-center justify-between border-b py-4"
       )}
     >
       <div>

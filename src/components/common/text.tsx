@@ -50,7 +50,7 @@ export function QuaternaryHeader({ children, className }: TextComponentProps) {
     <h4
       className={cn(
         className,
-        "scroll-m-20 text-xl font-medium tracking-tight text-foreground/75"
+        "scroll-m-20 text-lg font-medium tracking-tight text-foreground/75"
       )}
     >
       {children}

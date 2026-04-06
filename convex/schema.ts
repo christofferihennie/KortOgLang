@@ -9,7 +9,7 @@ export default defineSchema({
     name: v.string(),
     tokenIdentifier: v.optional(v.string()),
     betterAuthId: v.optional(v.string()),
-    gameColor: v.optional(v.string()),
+    gameColor: v.string(),
   })
     .index("by_token", ["tokenIdentifier"])
     .index("by_betterAuthId", ["betterAuthId"]),
@@ -19,6 +19,7 @@ export default defineSchema({
     locationId: v.id("locations"),
     type: v.union(v.literal(sevenRoundGameType), v.literal(nineRoundGameType)),
     gameMaster: v.optional(v.boolean()),
+    gameMasterId: v.optional(v.id("users")),
   }),
 
   gameParticipants: defineTable({
@@ -35,16 +36,14 @@ export default defineSchema({
   rounds: defineTable({
     gameId: v.id("games"),
     roundNumber: v.number(),
-    roundName: v.string(),
-    winnerId: v.optional(v.id("users")),
+    roundName: v.optional(v.string()),
   }).index("by_game", ["gameId"]),
 
   roundScores: defineTable({
     roundId: v.id("rounds"),
     userId: v.id("users"),
     score: v.number(),
-    cardsRemaining: v.optional(v.number()),
-  }).index("by_round", ["roundId"]),
+  }).index("by_round_and_user", ["roundId", "userId"]),
 
   locations: defineTable({
     name: v.string(),
