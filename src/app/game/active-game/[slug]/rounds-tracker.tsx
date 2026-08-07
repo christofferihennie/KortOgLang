@@ -75,7 +75,7 @@ export default function RoundTracker(props: {
             {roundScores?.map((round) => (
                 <TabsContent key={round.roundId} value={round.roundNumber.toString()}>
                     <h4 className='scroll-m-20 leading-7 font-semibold tracking-tight'>
-                        {round.roundName}:
+                        {round.roundName} {game?.type === "9 runder" && `(${round.roundNumber + 6})`}:
                     </h4>
                     <Table key={round.roundId}>
                         <TableHeader>
