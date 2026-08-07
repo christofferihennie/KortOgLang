@@ -1,0 +1,36 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [
+    "typescript",
+    "unicorn",
+    "oxc",
+    "import",
+    "react",
+    "jsx-a11y",
+    "vitest"
+  ],
+  "categories": {
+    "correctness": "error"
+  },
+  "rules": {
+    "eslint/no-shadow": "warn",
+    "eslint/no-var": "error",
+    "eslint/prefer-const": "error",
+    "typescript/consistent-type-imports": [
+      "error",
+      { "prefer": "type-imports" }
+    ],
+    "typescript/method-signature-style": ["error", "property"],
+    "typescript/no-inferrable-types": "error",
+    "typescript/no-unnecessary-condition": "error",
+    "typescript/no-unnecessary-type-assertion": "error",
+    "typescript/prefer-for-of": "error",
+    "import/consistent-type-specifier-style": ["error", "prefer-top-level"],
+    "import/first": "error",
+    "import/newline-after-import": "error",
+    "import/no-commonjs": "error",
+    "import/no-duplicates": "error",
+    "unicorn/prefer-node-protocol": "error"
+  },
+  "ignorePatterns": ["convex/_generated", "src/routeTree.gen.ts"]
+}
