@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite dev --port 3000",
+    "dev": "concurrently --kill-others-on-fail --names tanstack,convex \"vite dev --port 3000\" \"convex dev\"",
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run",
@@ -50,6 +50,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^6",
+    "concurrently": "^10.0.4",
     "jsdom": "^28",
     "oxfmt": "0.62.0",
     "oxlint": "^1.77.0",
