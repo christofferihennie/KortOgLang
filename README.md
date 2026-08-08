@@ -1,6 +1,15 @@
-# TanStack Start + shadcn/ui
+# Kort og Lang
 
-This is a template for a new TanStack Start project with React, TypeScript, and shadcn/ui.
+The TanStack Start frontend uses Clerk for authentication and sends Clerk session
+tokens to Convex through `ConvexProviderWithClerk`.
+
+## Local setup
+
+Copy `.env.example` to `.env.local` and fill in the Clerk and Convex values. The
+Clerk Convex integration must be activated, and `CLERK_FRONTEND_API_URL` must also
+be configured on the Convex deployment. After changing `convex/auth.config.ts`,
+run the normal Convex development or deployment command so the auth provider is
+synced.
 
 ## Adding components
 

@@ -1,16 +1,15 @@
 import { createRouter } from "@tanstack/react-router"
 import { QueryClient } from "@tanstack/react-query"
 import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query"
+import { nbNO } from "@clerk/localizations"
+import { ClerkProvider, useAuth } from "@clerk/tanstack-react-start"
 import { ConvexQueryClient } from "@convex-dev/react-query"
-import { ConvexProvider } from "convex/react"
+import { ConvexProviderWithClerk } from "convex/react-clerk"
+import { env } from "./env"
 import { routeTree } from "./routeTree.gen"
 
 export function getRouter() {
-  const CONVEX_URL = (import.meta as any).env.VITE_CONVEX_URL!
-  if (!CONVEX_URL) {
-    console.error("missing envar VITE_CONVEX_URL")
-  }
-  const convexQueryClient = new ConvexQueryClient(CONVEX_URL)
+  const convexQueryClient = new ConvexQueryClient(env.VITE_CONVEX_URL)
 
   const queryClient: QueryClient = new QueryClient({
     defaultOptions: {
@@ -27,10 +26,18 @@ export function getRouter() {
     defaultPreload: "intent",
     context: { queryClient },
     scrollRestoration: true,
-    Wrap: ({ children }) => (
-      <ConvexProvider client={convexQueryClient.convexClient}>
-        {children}
-      </ConvexProvider>
+    InnerWrap: ({ children }) => (
+      <ClerkProvider
+        publishableKey={env.VITE_CLERK_PUBLISHABLE_KEY}
+        localization={nbNO}
+      >
+        <ConvexProviderWithClerk
+          client={convexQueryClient.convexClient}
+          useAuth={useAuth}
+        >
+          {children}
+        </ConvexProviderWithClerk>
+      </ClerkProvider>
     ),
   })
   setupRouterSsrQueryIntegration({ router, queryClient })
