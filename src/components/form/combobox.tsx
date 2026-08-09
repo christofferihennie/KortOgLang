@@ -44,7 +44,7 @@ interface ComboboxProps {
 }
 
 export function Combobox({
-  options = [],
+  options,
   value,
   onChangeAction,
   placeholder = "Velg et alternativ …",
