@@ -11,8 +11,12 @@
 import { Route as rootRouteImport } from "./routes/__root"
 import { Route as IndexRouteImport } from "./routes/index"
 import { Route as SignInRouteImport } from "./routes/sign-in"
+import { Route as GameFinishedGamesRouteImport } from "./routes/game/finished-games"
 import { Route as GameNewGameRouteImport } from "./routes/game/new-game"
 import { Route as GameActiveGameSlugRouteImport } from "./routes/game/active-game/$slug"
+import { Route as GameFinishedGameSlugRouteRouteImport } from "./routes/game/finished-game/$slug/route"
+import { Route as GameFinishedGameSlugIndexRouteImport } from "./routes/game/finished-game/$slug/index"
+import { Route as GameFinishedGameSlugChartRouteImport } from "./routes/game/finished-game/$slug/chart"
 
 const IndexRoute = IndexRouteImport.update({
   id: "/",
@@ -22,6 +26,11 @@ const IndexRoute = IndexRouteImport.update({
 const SignInRoute = SignInRouteImport.update({
   id: "/sign-in",
   path: "/sign-in",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GameFinishedGamesRoute = GameFinishedGamesRouteImport.update({
+  id: "/game/finished-games",
+  path: "/game/finished-games",
   getParentRoute: () => rootRouteImport,
 } as any)
 const GameNewGameRoute = GameNewGameRouteImport.update({
@@ -34,39 +43,93 @@ const GameActiveGameSlugRoute = GameActiveGameSlugRouteImport.update({
   path: "/game/active-game/$slug",
   getParentRoute: () => rootRouteImport,
 } as any)
+const GameFinishedGameSlugRouteRoute =
+  GameFinishedGameSlugRouteRouteImport.update({
+    id: "/game/finished-game/$slug",
+    path: "/game/finished-game/$slug",
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const GameFinishedGameSlugIndexRoute =
+  GameFinishedGameSlugIndexRouteImport.update({
+    id: "/",
+    path: "/",
+    getParentRoute: () => GameFinishedGameSlugRouteRoute,
+  } as any)
+const GameFinishedGameSlugChartRoute =
+  GameFinishedGameSlugChartRouteImport.update({
+    id: "/chart",
+    path: "/chart",
+    getParentRoute: () => GameFinishedGameSlugRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute
   "/sign-in": typeof SignInRoute
+  "/game/finished-games": typeof GameFinishedGamesRoute
   "/game/new-game": typeof GameNewGameRoute
+  "/game/finished-game/$slug": typeof GameFinishedGameSlugRouteRouteWithChildren
   "/game/active-game/$slug": typeof GameActiveGameSlugRoute
+  "/game/finished-game/$slug/chart": typeof GameFinishedGameSlugChartRoute
+  "/game/finished-game/$slug/": typeof GameFinishedGameSlugIndexRoute
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute
   "/sign-in": typeof SignInRoute
+  "/game/finished-games": typeof GameFinishedGamesRoute
   "/game/new-game": typeof GameNewGameRoute
   "/game/active-game/$slug": typeof GameActiveGameSlugRoute
+  "/game/finished-game/$slug/chart": typeof GameFinishedGameSlugChartRoute
+  "/game/finished-game/$slug": typeof GameFinishedGameSlugIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   "/": typeof IndexRoute
   "/sign-in": typeof SignInRoute
+  "/game/finished-games": typeof GameFinishedGamesRoute
   "/game/new-game": typeof GameNewGameRoute
+  "/game/finished-game/$slug": typeof GameFinishedGameSlugRouteRouteWithChildren
   "/game/active-game/$slug": typeof GameActiveGameSlugRoute
+  "/game/finished-game/$slug/chart": typeof GameFinishedGameSlugChartRoute
+  "/game/finished-game/$slug/": typeof GameFinishedGameSlugIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: "/" | "/sign-in" | "/game/new-game" | "/game/active-game/$slug"
+  fullPaths:
+    | "/"
+    | "/sign-in"
+    | "/game/finished-games"
+    | "/game/new-game"
+    | "/game/finished-game/$slug"
+    | "/game/active-game/$slug"
+    | "/game/finished-game/$slug/chart"
+    | "/game/finished-game/$slug/"
   fileRoutesByTo: FileRoutesByTo
-  to: "/" | "/sign-in" | "/game/new-game" | "/game/active-game/$slug"
+  to:
+    | "/"
+    | "/sign-in"
+    | "/game/finished-games"
+    | "/game/new-game"
+    | "/game/active-game/$slug"
+    | "/game/finished-game/$slug/chart"
+    | "/game/finished-game/$slug"
   id:
-    "__root__" | "/" | "/sign-in" | "/game/new-game" | "/game/active-game/$slug"
+    | "__root__"
+    | "/"
+    | "/sign-in"
+    | "/game/finished-games"
+    | "/game/new-game"
+    | "/game/finished-game/$slug"
+    | "/game/active-game/$slug"
+    | "/game/finished-game/$slug/chart"
+    | "/game/finished-game/$slug/"
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SignInRoute: typeof SignInRoute
+  GameFinishedGamesRoute: typeof GameFinishedGamesRoute
   GameNewGameRoute: typeof GameNewGameRoute
+  GameFinishedGameSlugRouteRoute: typeof GameFinishedGameSlugRouteRouteWithChildren
   GameActiveGameSlugRoute: typeof GameActiveGameSlugRoute
 }
 
@@ -86,6 +149,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof SignInRouteImport
       parentRoute: typeof rootRouteImport
     }
+    "/game/finished-games": {
+      id: "/game/finished-games"
+      path: "/game/finished-games"
+      fullPath: "/game/finished-games"
+      preLoaderRoute: typeof GameFinishedGamesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     "/game/new-game": {
       id: "/game/new-game"
       path: "/game/new-game"
@@ -100,13 +170,52 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof GameActiveGameSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    "/game/finished-game/$slug": {
+      id: "/game/finished-game/$slug"
+      path: "/game/finished-game/$slug"
+      fullPath: "/game/finished-game/$slug"
+      preLoaderRoute: typeof GameFinishedGameSlugRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/game/finished-game/$slug/": {
+      id: "/game/finished-game/$slug/"
+      path: "/"
+      fullPath: "/game/finished-game/$slug/"
+      preLoaderRoute: typeof GameFinishedGameSlugIndexRouteImport
+      parentRoute: typeof GameFinishedGameSlugRouteRoute
+    }
+    "/game/finished-game/$slug/chart": {
+      id: "/game/finished-game/$slug/chart"
+      path: "/chart"
+      fullPath: "/game/finished-game/$slug/chart"
+      preLoaderRoute: typeof GameFinishedGameSlugChartRouteImport
+      parentRoute: typeof GameFinishedGameSlugRouteRoute
+    }
   }
 }
+
+interface GameFinishedGameSlugRouteRouteChildren {
+  GameFinishedGameSlugChartRoute: typeof GameFinishedGameSlugChartRoute
+  GameFinishedGameSlugIndexRoute: typeof GameFinishedGameSlugIndexRoute
+}
+
+const GameFinishedGameSlugRouteRouteChildren: GameFinishedGameSlugRouteRouteChildren =
+  {
+    GameFinishedGameSlugChartRoute: GameFinishedGameSlugChartRoute,
+    GameFinishedGameSlugIndexRoute: GameFinishedGameSlugIndexRoute,
+  }
+
+const GameFinishedGameSlugRouteRouteWithChildren =
+  GameFinishedGameSlugRouteRoute._addFileChildren(
+    GameFinishedGameSlugRouteRouteChildren,
+  )
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SignInRoute: SignInRoute,
+  GameFinishedGamesRoute: GameFinishedGamesRoute,
   GameNewGameRoute: GameNewGameRoute,
+  GameFinishedGameSlugRouteRoute: GameFinishedGameSlugRouteRouteWithChildren,
   GameActiveGameSlugRoute: GameActiveGameSlugRoute,
 }
 export const routeTree = rootRouteImport

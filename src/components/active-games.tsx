@@ -1,4 +1,5 @@
 import { convexQuery } from "@convex-dev/react-query"
+import { Link } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { Badge } from "@/components/ui/badge"
@@ -67,7 +68,11 @@ function ActiveGame({
     creationTime.getTime() < Date.now() - 24 * 60 * 60 * 1000
 
   return (
-    <a className="block min-w-80" href={`/game/active-game/${id}`}>
+    <Link
+      className="block min-w-80"
+      to="/game/active-game/$slug"
+      params={{ slug: id }}
+    >
       <Card className="h-full">
         <CardHeader>
           <CardTitle>{location}</CardTitle>
@@ -96,7 +101,7 @@ function ActiveGame({
           )}
         </CardFooter>
       </Card>
-    </a>
+    </Link>
   )
 }
 

@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, Link } from "@tanstack/react-router"
 import { ActiveGames, activeGamesQuery } from "@/components/active-games"
 import { DashboardLoading } from "@/components/dashboard-loading"
 import {
@@ -38,14 +38,14 @@ function App() {
         Dine siste spill
       </h2>
       <div className="space-y-4">
-        <PlayedGames />
+        <PlayedGames limit={10} />
         {finishedGames.length > 0 ? (
-          <a
-            href="/game/finished-games"
+          <Link
+            to="/game/finished-games"
             className="inline-flex h-8 items-center justify-center rounded-2xl bg-primary px-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/80"
           >
             Se alle dine spilte spill
-          </a>
+          </Link>
         ) : null}
       </div>
       <span className="sr-only">{activeGames.length} aktive spill</span>

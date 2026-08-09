@@ -1,4 +1,5 @@
 import { convexQuery } from "@convex-dev/react-query"
+import { useNavigate } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 
 import {
@@ -21,9 +22,15 @@ export const recentFinishedGamesQuery = convexQuery(
 
 export const allFinishedGamesQuery = convexQuery(api.games.getFinishedGames, {})
 
-export function PlayedGames({ limit = 10 }: { limit?: number }) {
-  const query = limit === 10 ? recentFinishedGamesQuery : allFinishedGamesQuery
+export function PlayedGames({ limit }: { limit?: number }) {
+  const query =
+    limit === 10
+      ? recentFinishedGamesQuery
+      : limit === undefined
+        ? allFinishedGamesQuery
+        : convexQuery(api.games.getFinishedGames, { n: limit })
   const { data: finishedGames } = useSuspenseQuery(query)
+  const navigate = useNavigate()
 
   if (finishedGames.length === 0) {
     return (
@@ -51,12 +58,18 @@ export function PlayedGames({ limit = 10 }: { limit?: number }) {
               tabIndex={0}
               role="link"
               onClick={() => {
-                window.location.href = `/game/finished-game/${game._id}`
+                void navigate({
+                  to: "/game/finished-game/$slug",
+                  params: { slug: game._id },
+                })
               }}
               onKeyDown={(event) => {
                 if (event.key === "Enter" || event.key === " ") {
                   event.preventDefault()
-                  window.location.href = `/game/finished-game/${game._id}`
+                  void navigate({
+                    to: "/game/finished-game/$slug",
+                    params: { slug: game._id },
+                  })
                 }
               }}
             >

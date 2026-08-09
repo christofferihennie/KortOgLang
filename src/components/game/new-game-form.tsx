@@ -5,6 +5,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { Controller, useForm } from "react-hook-form"
 import { useState } from "react"
 import { z } from "zod"
+import { useNavigate } from "@tanstack/react-router"
 
 import { api } from "../../../convex/_generated/api"
 import type { Id } from "../../../convex/_generated/dataModel"
@@ -42,6 +43,7 @@ export function NewGameForm() {
   const { data: locations } = useSuspenseQuery(locationsQuery)
   const { data: users } = useSuspenseQuery(usersQuery)
   const createGame = useMutation(api.games.createGame)
+  const navigate = useNavigate()
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -79,7 +81,10 @@ export function NewGameForm() {
         gameType: values.gameType,
         gameMaster: values.gameMaster,
       })
-      window.location.href = `/game/active-game/${result.gameId}`
+      await navigate({
+        to: "/game/active-game/$slug",
+        params: { slug: result.gameId },
+      })
     } catch (submissionError) {
       setError(
         submissionError instanceof Error
