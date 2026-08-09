@@ -24,7 +24,7 @@ export function getRouter() {
   const router = createRouter({
     routeTree,
     defaultPreload: "intent",
-    context: { queryClient },
+    context: { queryClient, convexQueryClient },
     scrollRestoration: true,
     InnerWrap: ({ children }) => (
       <ClerkProvider
