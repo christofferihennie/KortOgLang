@@ -8,7 +8,10 @@ import {
 } from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { TanStackDevtools } from "@tanstack/react-devtools"
+import { ThemeProvider } from "next-themes"
 
+import { AppShell } from "@/components/app-shell"
+import { Toaster } from "@/components/ui/sonner"
 import { getAuthState, getConvexToken } from "@/lib/auth"
 import { api } from "../../convex/_generated/api"
 import appCss from "../styles.css?url"
@@ -60,13 +63,38 @@ export const Route = createRootRouteWithContext<{
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "Kort Og Lang",
+        title: "Kort og Lang",
+      },
+      {
+        name: "description",
+        content:
+          "Hold oversikt, se statistikk, og kjemp om å være den med de beste kortene!",
+      },
+      {
+        name: "theme-color",
+        content: "#234E6B",
+      },
+      {
+        name: "apple-mobile-web-app-capable",
+        content: "yes",
+      },
+      {
+        name: "apple-mobile-web-app-status-bar-style",
+        content: "black-translucent",
       },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
+      },
+      {
+        rel: "manifest",
+        href: "/manifest.json",
+      },
+      {
+        rel: "apple-touch-icon",
+        href: "/manifest-icon-192.maskable.png",
       },
     ],
   }),
@@ -81,23 +109,33 @@ export const Route = createRootRouteWithContext<{
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="no" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
       <body>
-        {children}
-        <TanStackDevtools
-          config={{
-            position: "bottom-right",
-          }}
-          plugins={[
-            {
-              name: "Tanstack Router",
-              render: <TanStackRouterDevtoolsPanel />,
-            },
-          ]}
-        />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AppShell>{children}</AppShell>
+          <Toaster />
+          {import.meta.env.DEV ? (
+            <TanStackDevtools
+              config={{
+                position: "bottom-right",
+              }}
+              plugins={[
+                {
+                  name: "Tanstack Router",
+                  render: <TanStackRouterDevtoolsPanel />,
+                },
+              ]}
+            />
+          ) : null}
+        </ThemeProvider>
         <Scripts />
       </body>
     </html>
