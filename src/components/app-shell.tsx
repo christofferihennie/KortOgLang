@@ -4,7 +4,7 @@ import {
   UserCircleIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { useLocation } from "@tanstack/react-router"
+import { Link, useLocation } from "@tanstack/react-router"
 import type { ReactNode } from "react"
 
 import { cn } from "@/lib/utils"
@@ -35,9 +35,9 @@ export function AppShell({ children }: { children: ReactNode }) {
             (item.to !== "/" && location.pathname.startsWith(item.to))
 
           return (
-            <a
+            <Link
               key={item.to}
-              href={item.to}
+              to={item.to}
               className="m-1 flex flex-col items-center"
             >
               <HugeiconsIcon
@@ -58,7 +58,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               >
                 {item.label}
               </span>
-            </a>
+            </Link>
           )
         })}
       </nav>

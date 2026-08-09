@@ -11,6 +11,8 @@ import { TanStackDevtools } from "@tanstack/react-devtools"
 import { ThemeProvider } from "next-themes"
 
 import { AppShell } from "@/components/app-shell"
+import { PostHogProvider } from "@/components/posthog-provider"
+import { StartupImages } from "@/components/startup-images"
 import { Toaster } from "@/components/ui/sonner"
 import { getAuthState, getConvexToken } from "@/lib/auth"
 import { api } from "../../convex/_generated/api"
@@ -75,6 +77,10 @@ export const Route = createRootRouteWithContext<{
         content: "#234E6B",
       },
       {
+        name: "robots",
+        content: "noindex, nofollow, nocache",
+      },
+      {
         name: "apple-mobile-web-app-capable",
         content: "yes",
       },
@@ -120,7 +126,10 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           enableSystem
           disableTransitionOnChange
         >
-          <AppShell>{children}</AppShell>
+          <PostHogProvider>
+            <StartupImages />
+            <AppShell>{children}</AppShell>
+          </PostHogProvider>
           <Toaster />
           {import.meta.env.DEV ? (
             <TanStackDevtools

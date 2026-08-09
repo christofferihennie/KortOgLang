@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from "./routes/__root"
 import { Route as IndexRouteImport } from "./routes/index"
+import { Route as ProfileRouteImport } from "./routes/profile"
 import { Route as SignInRouteImport } from "./routes/sign-in"
 import { Route as GameFinishedGamesRouteImport } from "./routes/game/finished-games"
 import { Route as GameNewGameRouteImport } from "./routes/game/new-game"
@@ -21,6 +22,11 @@ import { Route as GameFinishedGameSlugChartRouteImport } from "./routes/game/fin
 const IndexRoute = IndexRouteImport.update({
   id: "/",
   path: "/",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: "/profile",
+  path: "/profile",
   getParentRoute: () => rootRouteImport,
 } as any)
 const SignInRoute = SignInRouteImport.update({
@@ -64,6 +70,7 @@ const GameFinishedGameSlugChartRoute =
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute
+  "/profile": typeof ProfileRoute
   "/sign-in": typeof SignInRoute
   "/game/finished-games": typeof GameFinishedGamesRoute
   "/game/new-game": typeof GameNewGameRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute
+  "/profile": typeof ProfileRoute
   "/sign-in": typeof SignInRoute
   "/game/finished-games": typeof GameFinishedGamesRoute
   "/game/new-game": typeof GameNewGameRoute
@@ -84,6 +92,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   "/": typeof IndexRoute
+  "/profile": typeof ProfileRoute
   "/sign-in": typeof SignInRoute
   "/game/finished-games": typeof GameFinishedGamesRoute
   "/game/new-game": typeof GameNewGameRoute
@@ -96,6 +105,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | "/"
+    | "/profile"
     | "/sign-in"
     | "/game/finished-games"
     | "/game/new-game"
@@ -106,6 +116,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | "/"
+    | "/profile"
     | "/sign-in"
     | "/game/finished-games"
     | "/game/new-game"
@@ -115,6 +126,7 @@ export interface FileRouteTypes {
   id:
     | "__root__"
     | "/"
+    | "/profile"
     | "/sign-in"
     | "/game/finished-games"
     | "/game/new-game"
@@ -126,6 +138,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ProfileRoute: typeof ProfileRoute
   SignInRoute: typeof SignInRoute
   GameFinishedGamesRoute: typeof GameFinishedGamesRoute
   GameNewGameRoute: typeof GameNewGameRoute
@@ -140,6 +153,13 @@ declare module "@tanstack/react-router" {
       path: "/"
       fullPath: "/"
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/profile": {
+      id: "/profile"
+      path: "/profile"
+      fullPath: "/profile"
+      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     "/sign-in": {
@@ -212,6 +232,7 @@ const GameFinishedGameSlugRouteRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ProfileRoute: ProfileRoute,
   SignInRoute: SignInRoute,
   GameFinishedGamesRoute: GameFinishedGamesRoute,
   GameNewGameRoute: GameNewGameRoute,
