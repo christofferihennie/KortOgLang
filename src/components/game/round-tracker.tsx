@@ -50,6 +50,10 @@ export function RoundTracker({ gameId }: { gameId: Id<"games"> }) {
     return <p className="text-muted-foreground">Ingen runder tilgjengelig.</p>
   }
 
+  if (!game) {
+    return <p className="text-destructive">Spillet finnes ikke.</p>
+  }
+
   const nextRound = () => {
     const next = (Number.parseInt(currentRound, 10) % rounds.length) + 1
     setRound(String(next))
@@ -89,7 +93,7 @@ export function RoundTracker({ gameId }: { gameId: Id<"games"> }) {
           >
             <h2 className="leading-7 font-semibold tracking-tight">
               {current.roundName}{" "}
-              {game?.type === "9 runder" ? `(${current.roundNumber + 6})` : ""}:
+              {game.type === "9 runder" ? `(${current.roundNumber + 6})` : ""}:
             </h2>
             <Table>
               <TableHeader>
@@ -100,18 +104,20 @@ export function RoundTracker({ gameId }: { gameId: Id<"games"> }) {
               </TableHeader>
               <TableBody>
                 {scoreRound.scores.map((participant) => {
-                  const colorKey =
-                    (participant.userInfo
-                      ?.gameColor as keyof typeof userColors) ?? "slate"
-                  const editable = game?.gameMaster
+                  const colorKey = participant.userInfo?.gameColor
+                  const colorClass =
+                    colorKey && colorKey in userColors
+                      ? userColors[colorKey as keyof typeof userColors]
+                      : userColors.slate
+                  const editable = game.gameMaster
                     ? participant.gameMaster !== true
-                    : participant.userId === user?._id
+                    : participant.userId === user._id
 
                   return (
                     <TableRow key={participant._id}>
                       <TableCell>
                         <div
-                          className={`${userColors[colorKey] ?? userColors.slate} w-full rounded-md px-2 py-4`}
+                          className={`${colorClass} w-full rounded-md px-2 py-4`}
                         >
                           {participant.userInfo?.name ?? "Ukjent"}
                         </div>

@@ -7,6 +7,7 @@ import {
   recentFinishedGamesQuery,
 } from "@/components/played-games"
 import { Separator } from "@/components/ui/separator"
+
 export const Route = createFileRoute("/")({
   loader: async ({ context }) => {
     await Promise.all([

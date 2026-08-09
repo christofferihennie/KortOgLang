@@ -2,6 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 
 import type { Id } from "../../../convex/_generated/dataModel"
 import { activeGameQueries } from "@/components/game/active-game-queries"
+import { rankByLowestScore } from "@/lib/game-helpers"
 
 export function Podium({ gameId }: { gameId: Id<"games"> }) {
   const { data: standing } = useSuspenseQuery(
@@ -17,10 +18,11 @@ export function Podium({ gameId }: { gameId: Id<"games"> }) {
   }
 
   const playersWithPositions = standing.map((player) => {
-    const playersAhead = standing.filter(
-      (other) => (other.totalScore ?? 0) < (player.totalScore ?? 0)
-    ).length
-    return { ...player, position: playersAhead + 1 }
+    const position = rankByLowestScore(
+      player.totalScore,
+      standing.map((candidate) => candidate.totalScore)
+    )
+    return { ...player, position }
   })
 
   const firstPlace = playersWithPositions.filter(
@@ -62,7 +64,7 @@ export function Podium({ gameId }: { gameId: Id<"games"> }) {
               className="leading-7"
             >
               {player.position}. {shortName(player.user?.name)} –{" "}
-              {player.totalScore ?? 0} poeng
+              {player.totalScore} poeng
             </p>
           ))}
       </div>
@@ -97,7 +99,7 @@ function PodiumPlace({
         className={`${className} rounded-t-md rounded-b-sm py-1 text-center text-primary-foreground`}
       >
         <p className="text-xl">{position}.</p>
-        <p className="text-sm">{players[0]?.totalScore ?? 0}p</p>
+        <p className="text-sm">{players.at(0)?.totalScore ?? 0}p</p>
       </div>
     </div>
   )

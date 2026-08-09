@@ -24,7 +24,7 @@ export function FinishedRoundStats({ gameId }: { gameId: Id<"games"> }) {
     return <p className="text-muted-foreground">Ingen runder tilgjengelig.</p>
   }
 
-  const value = selectedRound ?? rounds[0]?.roundNumber.toString() ?? "1"
+  const value = selectedRound ?? rounds.at(0)?.roundNumber.toString() ?? "1"
 
   return (
     <Tabs
@@ -65,14 +65,17 @@ export function FinishedRoundStats({ gameId }: { gameId: Id<"games"> }) {
               <TableBody>
                 {scoreRound.scores.map((participant) => {
                   if (!participant.userInfo) return null
-                  const colorKey = participant.userInfo
-                    .gameColor as keyof typeof userColors
+                  const colorKey = participant.userInfo.gameColor
+                  const colorClass =
+                    colorKey && colorKey in userColors
+                      ? userColors[colorKey as keyof typeof userColors]
+                      : userColors.slate
 
                   return (
                     <TableRow key={participant._id}>
                       <TableCell>
                         <div
-                          className={`${userColors[colorKey] ?? userColors.slate} w-full rounded-md px-2 py-4`}
+                          className={`${colorClass} w-full rounded-md px-2 py-4`}
                         >
                           {participant.userInfo.name}
                         </div>

@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Spinner } from "@/components/ui/loading-spinner"
+import { formatParticipantName } from "@/lib/game-helpers"
 import { api } from "../../convex/_generated/api"
 
 export const activeGamesQuery = convexQuery(api.games.getActiveGames, {})
@@ -103,13 +104,6 @@ function ActiveGame({
       </Card>
     </Link>
   )
-}
-
-function formatParticipantName(name: string) {
-  const [firstName, ...rest] = name.trim().split(/\s+/)
-  const lastInitial = rest.at(-1)?.[0]
-  if (!firstName) return "Ukjent"
-  return lastInitial ? `${firstName} ${lastInitial}` : firstName
 }
 
 export function ActiveGamesLoading() {

@@ -1,6 +1,7 @@
 import { v } from "convex/values"
 import { userColors } from "../shared/constants/colors"
-import { mutation, type QueryCtx, query } from "./_generated/server"
+import { mutation, query } from "./_generated/server"
+import type { QueryCtx } from "./_generated/server"
 
 export const store = mutation({
   args: {},

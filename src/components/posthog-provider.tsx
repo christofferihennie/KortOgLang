@@ -1,6 +1,7 @@
 import posthog from "posthog-js"
 import { useLocation } from "@tanstack/react-router"
-import { useEffect, type ReactNode } from "react"
+import { useEffect } from "react"
+import type { ReactNode } from "react"
 
 import { env } from "@/env"
 

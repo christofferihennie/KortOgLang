@@ -9,7 +9,8 @@ import { useNavigate } from "@tanstack/react-router"
 
 import { api } from "../../../convex/_generated/api"
 import type { Id } from "../../../convex/_generated/dataModel"
-import { Combobox, type ComboboxOption } from "@/components/form"
+import { Combobox } from "@/components/form"
+import type { ComboboxOption } from "@/components/form"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import {

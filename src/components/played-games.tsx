@@ -1,6 +1,7 @@
 import { convexQuery } from "@convex-dev/react-query"
-import { useNavigate } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
+import { Link } from "@tanstack/react-router"
+import type { ReactNode } from "react"
 
 import {
   Table,
@@ -30,7 +31,6 @@ export function PlayedGames({ limit }: { limit?: number }) {
         ? allFinishedGamesQuery
         : convexQuery(api.games.getFinishedGames, { n: limit })
   const { data: finishedGames } = useSuspenseQuery(query)
-  const navigate = useNavigate()
 
   if (finishedGames.length === 0) {
     return (
@@ -52,41 +52,47 @@ export function PlayedGames({ limit }: { limit?: number }) {
         </TableHeader>
         <TableBody>
           {finishedGames.map((game) => (
-            <TableRow
-              key={game._id}
-              className="cursor-pointer"
-              tabIndex={0}
-              role="link"
-              onClick={() => {
-                void navigate({
-                  to: "/game/finished-game/$slug",
-                  params: { slug: game._id },
-                })
-              }}
-              onKeyDown={(event) => {
-                if (event.key === "Enter" || event.key === " ") {
-                  event.preventDefault()
-                  void navigate({
-                    to: "/game/finished-game/$slug",
-                    params: { slug: game._id },
-                  })
-                }
-              }}
-            >
-              <TableCell>
+            <TableRow key={game._id}>
+              <LinkedGameCell slug={game._id}>
                 {humanReadableDate(new Date(game._creationTime))}
-              </TableCell>
-              <TableCell>
+              </LinkedGameCell>
+              <LinkedGameCell slug={game._id}>
                 {game.participation.finalPosition ?? "0"}. med{" "}
                 {game.participation.finalScore ?? "-"} poeng
-              </TableCell>
-              <TableCell>{game.winner_name}</TableCell>
-              <TableCell>{game.num_participants}</TableCell>
-              <TableCell>{game.location?.name ?? "Ukjent"}</TableCell>
+              </LinkedGameCell>
+              <LinkedGameCell slug={game._id}>
+                {game.winner_name}
+              </LinkedGameCell>
+              <LinkedGameCell slug={game._id}>
+                {game.num_participants}
+              </LinkedGameCell>
+              <LinkedGameCell slug={game._id}>
+                {game.location?.name ?? "Ukjent"}
+              </LinkedGameCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
     </div>
+  )
+}
+
+function LinkedGameCell({
+  slug,
+  children,
+}: {
+  slug: string
+  children: ReactNode
+}) {
+  return (
+    <TableCell className="p-0">
+      <Link
+        to="/game/finished-game/$slug"
+        params={{ slug }}
+        className="block p-2"
+      >
+        {children}
+      </Link>
+    </TableCell>
   )
 }

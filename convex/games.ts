@@ -12,13 +12,15 @@ export const getFinishedGames = query({
     const user = await getUserInternal(ctx)
     if (!user) throw new Error("Bruker ikke funnet")
 
-    const query = ctx.db
+    const participationsQuery = ctx.db
       .query("gameParticipants")
       .withIndex("by_user", (q) => q.eq("playerId", user._id))
       .filter((q) => q.neq(q.field("finalPosition"), undefined))
       .order("desc")
 
-    const participations = await (n ? query.take(n) : query.collect())
+    const participations = await (n
+      ? participationsQuery.take(n)
+      : participationsQuery.collect())
 
     const allGames = await Promise.all(
       participations.map((participation) => ctx.db.get(participation.gameId))
@@ -122,7 +124,9 @@ export const getActiveGames = query({
 
     const playerMap = new Map<string, Doc<"users">>(
       allPlayers
-        .filter((player) => player !== null)
+        .filter(
+          (player): player is NonNullable<typeof player> => player !== null
+        )
         .map((player) => [player._id, player])
     )
 
@@ -140,7 +144,7 @@ export const getActiveGames = query({
       const participants = gameParticipations
         .map((p) => playerMap.get(p.playerId))
         .filter(
-          (player): player is NonNullable<typeof player> => player !== null
+          (player): player is NonNullable<typeof player> => player !== undefined
         )
         .map((player) => ({ id: player._id, name: player.name }))
 
@@ -153,9 +157,7 @@ export const getActiveGames = query({
       }
     })
 
-    return results
-      .filter((game) => game !== undefined)
-      .sort((a, b) => b._creationTime - a._creationTime)
+    return results.sort((a, b) => b._creationTime - a._creationTime)
   },
 })
 

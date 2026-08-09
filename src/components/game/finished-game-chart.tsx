@@ -18,6 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { buildCumulativeScores } from "@/lib/game-helpers"
 
 const colorMap: Record<string, string> = {
   slate: "#94a3b8",
@@ -65,23 +66,7 @@ export function FinishedGameChart({ gameId }: { gameId: Id<"games"> }) {
   }, [players])
 
   const chartData = useMemo(() => {
-    const sortedRounds = [...roundScores].sort(
-      (left, right) => left.roundNumber - right.roundNumber
-    )
-    const totals = new Map<string, number>()
-    for (const userId of players.keys()) totals.set(userId, 0)
-
-    return sortedRounds.map((round) => {
-      for (const score of round.scores) {
-        totals.set(score.userId, (totals.get(score.userId) ?? 0) + score.score)
-      }
-
-      const point: Record<string, number> = { round: round.roundNumber }
-      for (const userId of players.keys()) {
-        point[userId] = totals.get(userId) ?? 0
-      }
-      return point
-    })
+    return buildCumulativeScores(roundScores, players.keys())
   }, [players, roundScores])
 
   if (chartData.length === 0 || players.size === 0) {
